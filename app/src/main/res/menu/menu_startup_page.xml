@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto"
+    tools:mContext="com.atulgpt.www.timetrix.Index">
+    <item android:id="@+id/action_detail_sub" android:title="@string/details_str"
+          android:orderInCategory="100"  />
+    <item android:id="@+id/action_delete_sub" android:title="@string/delete_subject_str"
+          android:orderInCategory="100"  />
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100"  />
+    <item android:id="@+id/action_mute" android:title="@string/mute_notification_str"
+        android:orderInCategory="100" android:checkable="true"  />
+    <item android:id="@+id/action_feedback" android:title="@string/give_us_feedback_str"
+        android:orderInCategory="100"  />
+    <item
+        android:id="@+id/action_note_search"
+        android:title="@string/search_the_notes_str"
+        appcompat:actionViewClass="android.support.v7.widget.SearchView"
+        appcompat:showAsAction="always" />
+</menu>

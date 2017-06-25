@@ -1,0 +1,37 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp"
+    tools:mContext="com.atulgpt.www.timetrix.Fragments.SubjectTabFragment">
+
+
+    <!--<ListView-->
+        <!--android:id="@+id/listNotesStarred"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="250dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:dividerHeight="1dp" />-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerNotesStarred"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
+    <ImageButton
+        android:id="@+id/buttonAddNotesStar"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/add_note_str"
+        android:elevation="@dimen/elevation_low"
+        android:src="@drawable/fab_ic_add"
+        android:stateListAnimator="@anim/button_elevation"
+        android:tint="@android:color/white" />
+
+
+</FrameLayout>

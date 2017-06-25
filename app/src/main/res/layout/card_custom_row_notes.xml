@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view_custom_row_note"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    card_view:cardCornerRadius="2dp"
+    card_view:contentPadding="1dp"
+    card_view:cardElevation="2dp"
+    card_view:cardMaxElevation="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <RelativeLayout android:id="@+id/custom_row_notes"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnVerticalMenu"
+            android:layout_width="32dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="-4dp"
+            android:layout_marginRight="-4dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/ic_more_vert_black_24dp"
+            android:contentDescription="@string/context_menu_description_str"
+            android:focusable="true"
+            android:clickable="true"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            android:foreground="?android:attr/selectableItemBackground"
+        />
+
+        <TextView
+            android:id="@+id/testViewNotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/testViewNotesTitle"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:alpha="0.7"
+            android:paddingBottom="3dp"
+            android:text="@string/lorem_ipsum_str"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000"
+            android:textSize="17sp"
+            />
+
+        <TextView
+            android:id="@+id/testViewNotesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="-2dp"
+            android:alpha="0.9"
+            android:text="@string/lorem_ipsum_str"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/testViewNotesDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="7dp"
+            android:layout_marginRight="7dp"
+            android:drawableLeft="@drawable/ic_access_time_black_18dp"
+            android:drawableStart="@drawable/ic_access_time_black_18dp"
+            android:text="@string/lorem_ipsum_str"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="13sp"/>
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

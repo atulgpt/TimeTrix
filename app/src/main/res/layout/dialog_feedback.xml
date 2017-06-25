@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="18dp">
+    <Spinner
+        android:id="@+id/feedback_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:entries="@array/category_feedback"
+        android:prompt="@string/select_a_choice"
+        android:spinnerMode="dropdown"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayoutTag"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/feedback_spinner">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/feedback_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/feedback_spinner"
+            android:layout_marginTop="20dp"
+            android:ems="8"
+            android:gravity="top"
+            android:hint="@string/give_feedback_here_str"
+            android:lines="6">
+        </android.support.v7.widget.AppCompatEditText>
+    </android.support.design.widget.TextInputLayout>
+</RelativeLayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.atulgpt.www.timetrix"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:allowClearUserData="true"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
+        <activity
+            android:name=".InitialSettingPage"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".StartupPage"
+            android:label="@string/app_name">
+        </activity>
+
+        <receiver
+            android:name=".Utils.Alarm"
+            android:process=":remote"/>
+
+        <activity
+            android:name=".Settings"
+            android:label="@string/title_activity_settings">
+        </activity>
+        <activity
+            android:name=".AddAnotherSubject"
+            android:label="@string/title_activity_add_another_subject">
+        </activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings">
+        </activity>
+        <activity android:name=".SearchActivity">
+        </activity>
+        <activity android:name=".SubjectDetailsActivity">
+        </activity>
+    </application>
+
+</manifest>

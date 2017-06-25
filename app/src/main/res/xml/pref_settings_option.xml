@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="passSwitch"
+        android:title="Enable Password"
+        android:summary="Protect your notes from unauthorised access"/>
+
+    <SwitchPreference
+        android:key="cloudSwitch"
+        android:title="Enable Sync"
+        android:summary="Allow cloud syncing"/>
+
+</PreferenceScreen>

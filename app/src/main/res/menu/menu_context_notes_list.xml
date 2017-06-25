@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_edit" android:title="@string/edit_str"
+        android:orderInCategory="100"  />
+    <item android:id="@+id/action_tag" android:title="@string/add_tag_str"
+        android:orderInCategory="100"  />
+    <item android:id="@+id/action_star" android:title="@string/star_it_str"
+        android:orderInCategory="100" android:checkable="true" />
+    <item android:id="@+id/action_add_alarm" android:title="@string/add_alarm_str"
+        android:orderInCategory="100"  />
+    <item android:id="@+id/action_delete" android:title="@string/delete_str"
+        android:orderInCategory="100"  />
+</menu>

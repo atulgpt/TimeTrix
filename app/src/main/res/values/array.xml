@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_feedback">
+        <item>Feedback</item>
+        <item>Feature Request</item>
+        <item>Report Bug</item>
+    </string-array>
+    
+    <string-array name="tabs_name">
+        <item>@string/all_notes_str</item>
+        <item>@string/starred_str</item>
+        <item>@string/expired_str</item>
+    </string-array>
+
+    <string-array name="tags_color">
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Red</item>
+        <item>White</item>
+    </string-array>
+</resources>

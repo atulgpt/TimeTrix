@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="5dp"
+        android:paddingStart="10dp"
+        android:id="@+id/relativeLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lorem_ipsum_str"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:id="@+id/noteTitleExpandedView"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgBtnThreeDots"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            android:background="#00000000"
+            android:contentDescription="@string/context_menu_description_str"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgBtnEdit"
+            android:layout_marginEnd="5dp"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/imgBtnThreeDots"
+            android:src="@drawable/ic_edit_black_24dp"
+            android:background="#00000000"
+            android:contentDescription="@string/edit_the_note_str"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/imgBtnDelete"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/imgBtnEdit"
+            android:src="@drawable/ic_delete_forever_black_24dp"
+            android:background="#00000000"
+            android:contentDescription="@string/delete_the_note_str"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/imgBtnStar"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/imgBtnDelete"
+            android:src="@drawable/ic_star_black_24dp"
+            android:background="#00000000"
+            android:contentDescription="@string/context_menu_description_str"/>
+
+    </RelativeLayout>
+    <View android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/relativeLayout"
+        android:background="#808080" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="17dp"
+        android:text="@string/lorem_ipsum_str"
+        android:id="@+id/noteBodyExpanderView"
+        android:layout_alignParentStart="true"
+        android:textColor="#202020"
+        android:textSize="18sp"/>
+
+
+</RelativeLayout>

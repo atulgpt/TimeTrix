@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:id="@+id/custom_row_notes">
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/btnVerticalMenu"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="-4dp"
+        android:layout_marginRight="-4dp"
+        android:src="@drawable/ic_more_vert_black_24dp"
+        android:background="@drawable/ic_more_vert_black_24dp"
+        android:contentDescription="@string/context_menu_description_str"
+        android:focusable="false"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="2dp"
+        android:paddingBottom="3dp"
+        android:layout_below="@+id/testViewNotesTitle"
+        android:text="@string/lorem_ipsum_str"
+        android:textSize="17sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#000000"
+        android:alpha="0.7"
+        android:id="@+id/testViewNotes"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginTop="-2dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#000000"
+        android:alpha="0.9"
+        android:textSize="20sp"
+        android:text="@string/lorem_ipsum_str"
+        android:id="@+id/testViewNotesTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/lorem_ipsum_str"
+        android:id="@+id/testViewNotesDate"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginRight="7dp"
+        android:textSize="13sp"
+        android:drawableStart="@drawable/ic_access_time_black_18dp"
+        android:drawableLeft="@drawable/ic_access_time_black_18dp"/>
+
+
+</RelativeLayout>

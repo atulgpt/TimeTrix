@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:mContext="com.atulgpt.www.timetrix.Settings">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarSettings"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="8dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/toolbarSettings">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/enable_password_protection_str"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:text="@string/enable_cloud_sync_str"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/switch_password"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+
+        <Button
+            android:id="@+id/button_save_pdf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:contentDescription="@string/save_all_content_pdf_str"
+            android:text="@string/save_all_content_pdf_str"/>
+
+        <Button
+            android:id="@+id/button_delete_data"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/button_save_pdf"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:contentDescription="@string/delete_all_data_str"
+            android:text="@string/delete_all_data_str"/>
+        <!--<com.facebook.login.widget.LoginButton-->
+            <!--android:id="@+id/login_button_1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="75dp"-->
+            <!--android:layout_below="@+id/button_delete_data"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginTop="@dimen/activity_horizontal_margin" />-->
+    </RelativeLayout>
+</RelativeLayout>
