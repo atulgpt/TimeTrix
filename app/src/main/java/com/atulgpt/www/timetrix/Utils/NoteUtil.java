@@ -24,7 +24,7 @@ public class NoteUtil {
         mContext = context;
     }
 
-    public Boolean setNote(long subjectID, String notes) {
+    private Boolean setNote(long subjectID, String notes) {
         if (subjectID < 0)
             return false;
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (mContext);
@@ -59,7 +59,7 @@ public class NoteUtil {
             if (i != notePosition) {
                 try {
                     JSONObject tempJSONObject = jsonArray.getJSONObject (i);
-                    tempJSONObject.put (Util.NOTE_INDEX, i + offset);
+                    tempJSONObject.put (GlobalData.NOTE_INDEX, i + offset);
                     jsonArrayNew.put (jsonArray.get (i));
                 } catch (JSONException e) {
                     e.printStackTrace ();
@@ -88,14 +88,14 @@ public class NoteUtil {
             if (i != notePosition) {
                 try {
                     JSONObject tempJSONObject = jsonArray.getJSONObject (i + offset);
-                    tempJSONObject.put (Util.NOTE_INDEX, i);
+                    tempJSONObject.put (GlobalData.NOTE_INDEX, i);
                     jsonArrayNew.put (tempJSONObject);
                 } catch (JSONException e) {
                     e.printStackTrace ();
                 }
             } else {
                 try {
-                    note.put (Util.NOTE_INDEX, i);
+                    note.put (GlobalData.NOTE_INDEX, i);
                     jsonArrayNew.put (i, note);
                 } catch (JSONException e) {
                     e.printStackTrace ();
@@ -117,8 +117,8 @@ public class NoteUtil {
         jsonArray = getNoteJSONArray (subjectID);
         try {
             jsonObject = jsonArray.getJSONObject ((int) notePosition);
-            jsonObject.put (Util.NOTE_TITLE, title);
-            jsonObject.put (Util.NOTE_BODY, note);
+            jsonObject.put (GlobalData.NOTE_TITLE, title);
+            jsonObject.put (GlobalData.NOTE_BODY, note);
             jsonArray.put ((int) notePosition, jsonObject);
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -140,9 +140,9 @@ public class NoteUtil {
         }
         try {
             if (jsonObject != null) {
-                if (jsonObject.getBoolean (Util.NOTE_IS_STAR))
-                    jsonObject.put (Util.NOTE_IS_STAR, false);
-                else jsonObject.put (Util.NOTE_IS_STAR, true);
+                if (jsonObject.getBoolean (GlobalData.NOTE_IS_STAR))
+                    jsonObject.put (GlobalData.NOTE_IS_STAR, false);
+                else jsonObject.put (GlobalData.NOTE_IS_STAR, true);
             }
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -163,7 +163,7 @@ public class NoteUtil {
         }
         try {
             if (jsonObject != null) {
-                return jsonObject.getBoolean (Util.NOTE_IS_STAR);
+                return jsonObject.getBoolean (GlobalData.NOTE_IS_STAR);
             }
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -177,8 +177,8 @@ public class NoteUtil {
         JSONArray jsonArrayTag = new JSONArray ();
         JSONObject jsonObjectTag = new JSONObject ();
         try {
-            jsonObjectTag.put (Util.NOTE_TAG_NAME, tag);
-            jsonObjectTag.put (Util.NOTE_TAG_COLOR, color);
+            jsonObjectTag.put (GlobalData.NOTE_TAG_NAME, tag);
+            jsonObjectTag.put (GlobalData.NOTE_TAG_COLOR, color);
         } catch (JSONException e) {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
@@ -196,7 +196,7 @@ public class NoteUtil {
         }
         try {
             if (jsonObject != null) {
-                jsonArrayTag = jsonObject.getJSONArray (Util.NOTE_TAG_ARRAY);
+                jsonArrayTag = jsonObject.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
             }
 
         } catch (JSONException e) {
@@ -206,7 +206,7 @@ public class NoteUtil {
         jsonArrayTag.put (jsonObjectTag);
         try {
             if (jsonObject != null) {
-                jsonObject.put (Util.NOTE_TAG_ARRAY, jsonArrayTag);
+                jsonObject.put (GlobalData.NOTE_TAG_ARRAY, jsonArrayTag);
             }
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -221,7 +221,7 @@ public class NoteUtil {
         return setNote (subjectID, jsonArray.toString ());
     }
 
-    public JSONArray getTotalTags(long subjectID) { // FIXME: 07-05-2016 jsonArray should return unique tags and avoid repetition
+    private JSONArray getTotalTags(long subjectID) { // FIXME: 07-05-2016 jsonArray should return unique tags and avoid repetition
         JSONArray jsonArray;
         jsonArray = getNoteJSONArray (subjectID);
         JSONObject jsonObject = null;
@@ -237,7 +237,7 @@ public class NoteUtil {
 
             if (jsonObject != null) {
                 try {
-                    jsonArrayTags.put (jsonObject.getJSONArray (Util.NOTE_TAG_ARRAY));
+                    jsonArrayTags.put (jsonObject.getJSONArray (GlobalData.NOTE_TAG_ARRAY));
                 } catch (JSONException e) {
                     e.printStackTrace ();
                     if (DEBUG) Log.d (TAG, "2. getTotalTags " + e + jsonObject);
@@ -264,8 +264,8 @@ public class NoteUtil {
                 if (jsonObjectArray != null) {
                     for (int j = 0; j < jsonObjectArray.length (); j++) {
                         JSONObject jsonObjectTag = jsonObjectArray.getJSONObject (j);
-                        if (jsonObjectTag != null && !tagStringList.contains (jsonObjectTag.getString (Util.NOTE_TAG_NAME))) {
-                            tagStringList.add (jsonObjectTag.getString (Util.NOTE_TAG_NAME));
+                        if (jsonObjectTag != null && !tagStringList.contains (jsonObjectTag.getString (GlobalData.NOTE_TAG_NAME))) {
+                            tagStringList.add (jsonObjectTag.getString (GlobalData.NOTE_TAG_NAME));
                         }
                     }
                 }
@@ -298,7 +298,7 @@ public class NoteUtil {
             JSONArray jsonArrayTagArray = null;
             try {
                 if (jsonObjectNote != null) {
-                    jsonArrayTagArray = jsonObjectNote.getJSONArray (Util.NOTE_TAG_ARRAY);
+                    jsonArrayTagArray = jsonObjectNote.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
                 }
             } catch (JSONException e) {
                 e.printStackTrace ();
@@ -317,7 +317,7 @@ public class NoteUtil {
                     }
                     try {
                         if (jsonObjectTag != null) {
-                            if(jsonObjectTag.getString (Util.NOTE_TAG_NAME).equals (tag)){
+                            if(jsonObjectTag.getString (GlobalData.NOTE_TAG_NAME).equals (tag)){
                                 outJSONArrayNotes.put (jsonObjectNote);
                                 break;
                             }

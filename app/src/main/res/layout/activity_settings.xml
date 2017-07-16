@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:mContext="com.atulgpt.www.timetrix.Settings">
+                tools:mContext="com.atulgpt.www.timetrix.SettingsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarSettings"
@@ -48,7 +48,8 @@
             android:layout_below="@+id/textView"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:text="@string/enable_cloud_sync_str"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone"/>
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_sync"
@@ -57,7 +58,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/switch_password"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_save_pdf"
@@ -67,6 +69,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView2"
             android:layout_centerHorizontal="true"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:contentDescription="@string/save_all_content_pdf_str"
             android:text="@string/save_all_content_pdf_str"/>

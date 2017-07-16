@@ -35,7 +35,7 @@
     <string name="edit_the_note_str">Edit the note</string>
     <string name="delete_the_note_str">Delete the note</string>
     <string name="add_note_str">Add note</string>
-    <string name="add_subject_str">Add subject</string>
+    <string name="add_subject_str">Add section</string>
     <string name="give_feedback_here_str">Give feedback here!</string>
     <string name="submit_str">Submit</string>
     <string name="select_a_choice">Select a choice</string>
@@ -43,23 +43,23 @@
     <string name="starred_str">Starred</string>
     <string name="expired_str">Tags</string>
     <string name="search_the_notes_str">Search the notes</string>
-    <string name="add_another_subject_str">Add another subject</string>
-    <string name="title_activity_add_another_subject">Add another subject</string>
+    <string name="add_another_subject_str">Add another section</string>
+    <string name="title_activity_add_another_subject">Add another sectiont</string>
     <string name="oops_made_a_mistake_str">Oops! Made a mistake!</string>
     <string name="undo_str">Undo</string>
     <string name="all_note_is_corrupted_err_str">allNote is corrupted</string>
     <string name="undo_failed_err_str">Undo failed!</string>
     <string name="updating_list_failed_err_str">Updating list failed…</string>
-    <string name="write_tag_name_pick_a_color_str">Write tag name and pick acolor</string>
+    <string name="write_tag_name_pick_a_color_str">Write tag name and pick a color</string>
     <string name="apply_tag_str">Apply tag!</string>
     <string name="note_deleted_to_str">Note deleted!</string>
     <string name="operation_failed_tag_not_apply_to_str">Operation failed!\n TAG not applied</string>
-    <string name="empty_sub_name_not_to_str">Empty subject name is not allowed!</string>
+    <string name="empty_sub_name_not_to_str">Empty section name is not allowed!</string>
     <string name="back_str">Back</string>
     <string name="enter_lec_address_str">Enter lecture address</string>
     <string name="enter_weight_str">Enter weightage</string>
     <string name="enter_prof_name_str">Enter prof name</string>
-    <string name="enter_sub_name_str">Enter the subject name</string>
+    <string name="enter_sub_name_str">Enter the section name</string>
     <string name="first_time_use_app_str">First time using the app! Don\'t worry just fill in the following details!</string>
     <string name="subjects_str">Subjects</string>
     <string name="empty_tag_nt_allowed_to_str">Empty tag is not allowed</string>
@@ -78,7 +78,7 @@
     <string name="facebook_app_id">922492101212322</string>
     <string name="user_str">User</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Strings related to SettingsActivity -->
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
@@ -151,6 +151,7 @@
     <string name="pref_description_social_recommendations">Recommendations for people to contact
         based on your message history
     </string>
+    <string name="confirm_the_password">Confirm the password_str</string>
 
     <string-array name="list_preference_entries">
         <item>Entry 1</item>

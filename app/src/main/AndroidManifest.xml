@@ -34,11 +34,11 @@
             android:process=":remote"/>
 
         <activity
-            android:name=".Settings"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings">
         </activity>
         <activity
-            android:name=".AddAnotherSubject"
+            android:name=".AddAnotherSection"
             android:label="@string/title_activity_add_another_subject">
         </activity>
         <activity
@@ -47,12 +47,12 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".SettingsPreferenceActivity"
             android:label="@string/title_activity_settings">
         </activity>
         <activity android:name=".SearchActivity">
         </activity>
-        <activity android:name=".SubjectDetailsActivity">
+        <activity android:name=".NoteDetailsActivity">
         </activity>
     </application>
 

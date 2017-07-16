@@ -3,7 +3,7 @@ package com.atulgpt.www.timetrix.dataBinders;
 import android.content.Context;
 
 import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Utils.Util;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,12 +21,12 @@ public class SubjectsDetailsBinder {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (context);
         JSONObject subjectJson = databaseAdapter.getSubjectBundle (rowID);
         try {
-            this.mName = subjectJson.getString (Util.SUBJECT_NAME);
+            this.mName = subjectJson.getString (GlobalData.SUBJECT_NAME);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         try {
-            this.mProfName = subjectJson.getString (Util.PROF_NAME);
+            this.mProfName = subjectJson.getString (GlobalData.PROF_NAME);
         } catch (JSONException e) {
             e.printStackTrace ();
         }

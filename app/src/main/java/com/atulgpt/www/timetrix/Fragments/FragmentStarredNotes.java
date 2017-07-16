@@ -22,8 +22,8 @@ import android.widget.Toast;
 import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.Adapters.RecyclerViewAdapter;
 import com.atulgpt.www.timetrix.R;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 import com.atulgpt.www.timetrix.Utils.NoteUtil;
-import com.atulgpt.www.timetrix.Utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -219,14 +219,14 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
         try {
             int length;
             length = jsonArray.length ();
-            jsonObject.put (Util.NOTE_BODY, note);
+            jsonObject.put (GlobalData.NOTE_BODY, note);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm", Locale.US);
             long timeInMillis = System.currentTimeMillis ();
             String date = simpleDateFormat.format (new Date ());
-            jsonObject.put (Util.NOTE_DATE_STAMP, date);
-            jsonObject.put (Util.NOTE_TIME_MILLIS, timeInMillis);
-            jsonObject.put (Util.NOTE_TITLE, title);
-            jsonObject.put (Util.NOTE_IS_STAR, false);
+            jsonObject.put (GlobalData.NOTE_DATE_STAMP, date);
+            jsonObject.put (GlobalData.NOTE_TIME_MILLIS, timeInMillis);
+            jsonObject.put (GlobalData.NOTE_TITLE, title);
+            jsonObject.put (GlobalData.NOTE_IS_STAR, false);
             jsonArray.put (length, jsonObject);
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -313,9 +313,9 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject (count);
                 String temp = jsonObject.toString ();
-                String noteTitle = jsonObject.getString (Util.NOTE_TITLE);
-                String noteBody = jsonObject.getString (Util.NOTE_BODY);
-                if (jsonObject.getBoolean (Util.NOTE_IS_STAR)) {
+                String noteTitle = jsonObject.getString (GlobalData.NOTE_TITLE);
+                String noteBody = jsonObject.getString (GlobalData.NOTE_BODY);
+                if (jsonObject.getBoolean (GlobalData.NOTE_IS_STAR)) {
                     if ((noteBody.toLowerCase ()).contains (query.toLowerCase ()) || (noteTitle.toLowerCase ()).contains (query.toLowerCase ()) || query.equals ("")) {
                         mNotesListStarredNotes.add (temp);
                     }
@@ -324,7 +324,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
                 e.printStackTrace ();
             }
         }
-        mRecyclerViewAdapter.setFileID (mFileID);
+        mRecyclerViewAdapter.setNoteIndex (mFileID);
         mRecyclerViewStar.setAdapter (mRecyclerViewAdapter);
         mRecyclerViewAdapter.notifyDataSetChanged ();
     }

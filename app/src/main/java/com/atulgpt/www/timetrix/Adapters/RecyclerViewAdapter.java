@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -26,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atulgpt.www.timetrix.R;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 import com.atulgpt.www.timetrix.Utils.NoteUtil;
-import com.atulgpt.www.timetrix.Utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,33 +42,33 @@ import java.util.Calendar;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolderNotes> implements View.OnClickListener {
     private static final boolean DEBUG = true;
     private static final String TAG = RecyclerViewAdapter.class.getSimpleName ();
-    private ArrayList<String> mList;
-    private ArrayList<String> mListBackup = new ArrayList<> ();
+    private ArrayList<String> mArrayList;
+    //private ArrayList<String> mArrayListBackup = new ArrayList<> ();
     private final Context mContext;
     private String mParam;
     private OnListAdapterInteractionListener mOnListAdapterInteractionListener;
-    private String fileID;
-    private SearchFilter mFilter;
+    private String mNoteIndex;
+    //private SearchFilter mFilter;
 
     public RecyclerViewAdapter(ArrayList<String> list, Context context, String param) {
-        this.mList = list;
+        this.mArrayList = list;
         this.mContext = context;
         this.mParam = param;
-        mFilter = new SearchFilter (RecyclerViewAdapter.this);
+        //mFilter = new SearchFilter (RecyclerViewAdapter.this);
     }
 
-    public SearchFilter getFilter() {
+    /*public SearchFilter getFilter() {
         return mFilter;
-    }
+    }*/
 
-    public class ViewHolderNotes extends RecyclerView.ViewHolder {
+    class ViewHolderNotes extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         final TextView notes;
         TextView date;
         final TextView title;
         Button popupMenuDots;
 
-        public ViewHolderNotes(View view) {
+        ViewHolderNotes(View view) {
             super (view);
             notes = (TextView) view.findViewById (R.id.testViewNotes);
             date = (TextView) view.findViewById (R.id.testViewNotesDate);
@@ -78,52 +77,52 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
     }
-
-    public class SearchFilter extends Filter {
-        private RecyclerViewAdapter mAdapter;
+    /*
+    private class SearchFilter extends Filter {
+        private RecyclerViewAdapter mRecycleViewAdapter;
         private DatabaseAdapter mDatabaseAdapter = new DatabaseAdapter (mContext);
 
-        private SearchFilter(RecyclerViewAdapter adapter) {
+        private SearchFilter(RecyclerViewAdapter recyclerViewAdapter) {
             super ();
-            this.mAdapter = adapter;
+            this.mRecycleViewAdapter = recyclerViewAdapter;
 
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-//            Toast.makeText (mContext, "call 1: "+mListBackup+"   "+mList, Toast.LENGTH_SHORT).show ();
-            for (int i = 0; i < mList.size (); i++) {
-                mListBackup.add (mList.get (i));
+//            Toast.makeText (mContext, "call 1: "+mArrayListBackup+"   "+mArrayList, Toast.LENGTH_SHORT).show ();
+            for (int i = 0; i < mArrayList.size (); i++) {
+                mArrayListBackup.add (mArrayList.get (i));
             }
             FilterResults filterResults = new FilterResults ();
             ArrayList<String> mListTemp = new ArrayList<> ();
             if (charSequence.length () == 0) {
-                for (int i = 0; i < mListBackup.size (); i++) {
-                    mList.add (mListBackup.get (i));
+                for (int i = 0; i < mArrayListBackup.size (); i++) {
+                    mArrayList.add (mArrayListBackup.get (i));
                 }
-                filterResults.count = mList.size ();
-                filterResults.values = mList;
+                filterResults.count = mArrayList.size ();
+                filterResults.values = mArrayList;
             } else {
-                for (int i = 0; i < mList.size (); i++) {
+                for (int i = 0; i < mArrayList.size (); i++) {
                     JSONObject jsonObject = null;
                     try {
-                        jsonObject = new JSONObject (mList.get (i));
+                        jsonObject = new JSONObject (mArrayList.get (i));
                     } catch (JSONException e) {
                         e.printStackTrace ();
                     }
                     assert jsonObject != null;
                     String tempNoteBody = null;
                     try {
-                        tempNoteBody = jsonObject.getString (Util.NOTE_BODY);
+                        tempNoteBody = jsonObject.getString (GlobalData.NOTE_BODY);
                     } catch (JSONException e) {
                         e.printStackTrace ();
                     }
                     assert tempNoteBody != null;
                     if (tempNoteBody.toLowerCase ().contains (charSequence.toString ().toLowerCase ())) {
-                        mListTemp.add (mList.get (i));
+                        mListTemp.add (mArrayList.get (i));
                     }
                 }
-                mList = mListTemp;
+                mArrayList = mListTemp;
                 filterResults.count = mListTemp.size ();
                 filterResults.values = mListTemp;
             }
@@ -132,12 +131,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            this.mAdapter.notifyDataSetChanged ();
+            this.mRecycleViewAdapter.notifyDataSetChanged ();
         }
     }
-
-    public void setFileID(String fileID) {
-        this.fileID = fileID;
+    */
+    public void setNoteIndex(String mNoteIndex) {
+        this.mNoteIndex = mNoteIndex;
     }
 
     public void setOnListAdapterInteractionListener(OnListAdapterInteractionListener onListAdapterInteractionListener) {
@@ -199,24 +198,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String noteText = mContext.getString (R.string.lorem_ipsum_str), noteDateStamp = mContext.getString (R.string.lorem_ipsum_str), titleText = mContext.getString (R.string.lorem_ipsum_str);
         long noteTimeInMillis;
         try {
-            jsonObject = new JSONObject (mList.get (position));
-//            Toast.makeText (mContext, "value check= " + mList.get (position), Toast.LENGTH_SHORT).show ();
+            jsonObject = new JSONObject (mArrayList.get (position));
+//            Toast.makeText (mContext, "value check= " + mArrayList.get (position), Toast.LENGTH_SHORT).show ();
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         try {
-            noteText = jsonObject.getString (Util.NOTE_BODY);
+            noteText = jsonObject.getString (GlobalData.NOTE_BODY);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         try {
-            noteTimeInMillis = jsonObject.getLong (Util.NOTE_TIME_MILLIS);
+            noteTimeInMillis = jsonObject.getLong (GlobalData.NOTE_TIME_MILLIS);
             noteDateStamp = (String) DateUtils.getRelativeTimeSpanString (noteTimeInMillis, System.currentTimeMillis (), 3, DateUtils.FORMAT_ABBREV_RELATIVE);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         try {
-            titleText = jsonObject.getString (Util.NOTE_TITLE);
+            titleText = jsonObject.getString (GlobalData.NOTE_TITLE);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
@@ -238,8 +237,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      */
     @Override
     public int getItemCount() {
-//        Toast.makeText (mContext, "size check= "+mList.size (), Toast.LENGTH_SHORT).show ();
-        return mList.size ();
+//        Toast.makeText (mContext, "size check= "+mArrayList.size (), Toast.LENGTH_SHORT).show ();
+        return mArrayList.size ();
     }
 
     /**
@@ -254,7 +253,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             popupMenu.inflate (R.menu.menu_context_notes_list);
             PopupMenuHandler popupMenuHandler = new PopupMenuHandler (mContext, v);
             popupMenu.setOnMenuItemClickListener (popupMenuHandler);
-            int subjectID = (int) (Long.parseLong (fileID) + 1);
+            int subjectID = (int) (Long.parseLong (mNoteIndex) + 1);
             NoteUtil noteUtil = new NoteUtil (mContext);
             if (mParam.contains ("all"))
                 popupMenu.getMenu ().findItem (R.id.action_star).setChecked (noteUtil.getStarStatus ((int) v.getTag (), subjectID));
@@ -276,8 +275,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             TextView titleTextView = (TextView) viewDialog.findViewById (R.id.noteTitleExpandedView);
             TextView bodyTextView = (TextView) viewDialog.findViewById (R.id.noteBodyExpanderView);
             try {
-                titleTextView.setText (jsonArray.getJSONObject (notePosition).getString (Util.NOTE_TITLE));
-                bodyTextView.setText (jsonArray.getJSONObject (notePosition).getString (Util.NOTE_BODY));
+                titleTextView.setText (jsonArray.getJSONObject (notePosition).getString (GlobalData.NOTE_TITLE));
+                bodyTextView.setText (jsonArray.getJSONObject (notePosition).getString (GlobalData.NOTE_BODY));
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
@@ -296,12 +295,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private class PopupMenuHandler implements PopupMenu.OnMenuItemClickListener {
         final Context context;
         View contextMenuDots;
-        //String fileID;
+        //String mNoteIndex;
         CardView cardView;
         int rowPosition;
         long noteIndex;
 
-        public PopupMenuHandler(Context context, View view) {
+        PopupMenuHandler(Context context, View view) {
             this.context = context;
             this.contextMenuDots = view;
         }
@@ -312,16 +311,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             rowPosition = (int) contextMenuDots.getTag ();
             JSONObject jsonObject;
             try {
-                jsonObject = new JSONObject (mList.get (rowPosition));
-                noteIndex = jsonObject.getLong (Util.NOTE_INDEX);
+                jsonObject = new JSONObject (mArrayList.get (rowPosition));
+                noteIndex = jsonObject.getLong (GlobalData.NOTE_INDEX);
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
             String title = null, note = null;
 //            View rowView = (View) this.contextMenuDots.getParent ();
 //            cardView = (CardView) rowView.getParent ();
-            //fileID = (String) cardView.getTag(R.string.filename);
-            final int subjectID = (Integer.parseInt (fileID) + 1);
+            //mNoteIndex = (String) cardView.getTag(R.string.filename);
+            final int subjectID = (Integer.parseInt (RecyclerViewAdapter.this.mNoteIndex) + 1);
             JSONArray jsonArray;
             final NoteUtil noteUtil = new NoteUtil (context);
             LayoutInflater inflater = (LayoutInflater) context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
@@ -330,8 +329,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 return true;
 
             try {
-                title = jsonArray.getJSONObject ((int) noteIndex).getString (Util.NOTE_TITLE);
-                note = jsonArray.getJSONObject ((int) noteIndex).getString (Util.NOTE_BODY);
+                title = jsonArray.getJSONObject ((int) noteIndex).getString (GlobalData.NOTE_TITLE);
+                note = jsonArray.getJSONObject ((int) noteIndex).getString (GlobalData.NOTE_BODY);
             } catch (JSONException e) {
                 e.printStackTrace ();
             }

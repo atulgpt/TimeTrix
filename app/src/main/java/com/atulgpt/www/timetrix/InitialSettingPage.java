@@ -77,38 +77,59 @@ public class InitialSettingPage extends Activity {
             startActivity (intent);
             InitialSettingPage.this.finish ();
         } else {
-            new AlertDialog.Builder (InitialSettingPage.this).setTitle ("Enter Password")
-                    .setCancelable (false)
-                    .setView (R.layout.dialog_password_entry)
-                    .setPositiveButton (R.string.done_str, new DialogInterface.OnClickListener () {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil (InitialSettingPage.this);
-                            Dialog d = (Dialog) dialog;
-                            EditText userNameEditText = (EditText) d.findViewById (R.id.editText_userName);
-                            EditText passwordEditText = (EditText) d.findViewById (R.id.editText_password);
-                            String userName = userNameEditText.getText ().toString ();
-                            String password = passwordEditText.getText ().toString ();
-                            if (userName.equals (sharedPrefsUtil.getUserNameAuth ()) && password.equals (sharedPrefsUtil.getUserPassAuth ())) {
-                                Intent intent = new Intent (InitialSettingPage.this, StartupPage.class);
-                                startActivity (intent);
-                                dialog.dismiss ();
-                                InitialSettingPage.this.finish ();
-                            } else {
-                                Toast.makeText (InitialSettingPage.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show ();
-                                InitialSettingPage.this.finish ();
-                            }
-                        }
-                    })
-                    .setNegativeButton (R.string.cancel_str, new DialogInterface.OnClickListener () {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+            showDialogForPasswordVerification();
+        }
+    }
+
+    private void showDialogForPasswordVerification() {
+        new AlertDialog.Builder (InitialSettingPage.this).setTitle ("Enter Password")
+                .setCancelable (false)
+                .setView (R.layout.dialog_password_check)
+                .setPositiveButton (R.string.done_str, new DialogInterface.OnClickListener () {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPrefsUtil sharedPrefsUtil =
+                                new SharedPrefsUtil (InitialSettingPage.this);
+                        Dialog d = (Dialog) dialog;
+                        EditText passwordEditText = (EditText) d.
+                                findViewById (R.id.editText_password_verification);
+                        String password = passwordEditText.getText ().toString ();
+                        if (password.equals (sharedPrefsUtil.getUserPassAuth ())) {
+                            Intent intent = new Intent (InitialSettingPage.this,
+                                    StartupPage.class);
+                            startActivity (intent);
                             dialog.dismiss ();
                             InitialSettingPage.this.finish ();
+                        } else {
+                            //passwordEditText.setError ("Wrong Password");
+                            //passwordEditText.requestFocus ();
+                            Toast.makeText (InitialSettingPage.this, "Wrong Password",
+                                    Toast.LENGTH_SHORT).show ();
+                            dialog.dismiss ();
+                            InitialSettingPage.this.showWrongPasswordErrorDialog();
                         }
-                    })
-                    .show ();
-        }
+                    }
+                })
+                .setNegativeButton (R.string.cancel_str, new DialogInterface.OnClickListener () {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss ();
+                        InitialSettingPage.this.finish ();
+                    }
+                })
+                .show ();
+    }
+
+    private void showWrongPasswordErrorDialog() {
+        new AlertDialog.Builder (InitialSettingPage.this).setTitle ("Error!")
+                .setMessage ("Wrong password entered!")
+                .setCancelable (false)
+                .setPositiveButton (R.string.ok_str, new DialogInterface.OnClickListener () {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        InitialSettingPage.this.finish ();
+                    }
+                }).show ();
     }
 
     @Override

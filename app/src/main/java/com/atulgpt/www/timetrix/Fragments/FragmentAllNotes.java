@@ -28,8 +28,8 @@ import com.atulgpt.www.timetrix.Adapters.CustomAdapter;
 import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.Adapters.RecyclerViewAdapter;
 import com.atulgpt.www.timetrix.R;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 import com.atulgpt.www.timetrix.Utils.NoteUtil;
-import com.atulgpt.www.timetrix.Utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,18 +59,17 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     private static final int DIALOG_BUTTON_NOT_CLICKED = 0;
 
     // TODOo: Rename and change types of parameters
-    private String mFileID;
+    private String mNoteIndex;
     private String mTabPosition;
     private int mDialogStatus;
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mOnFragmentInteractionListener;
     //private static CustomAdapter.OnListAdapterInteractionListener mOnListAdapterInteractionListener;
 
-    private CustomAdapter mCustomAdapterAllNotes;
-    private RecyclerViewAdapter mCustomRecyclerAdapterAllNotes;
-    private ArrayList<String> mNotesListAllNotes;
+    private RecyclerViewAdapter mCustomRecyclerViewAdapterAllNotes;
+    private ArrayList<String> mArrayListAllNotes;
     private Handler mHandlerAll = null;
     private ListView mListViewAll;
-    private RecyclerView mRecyclerViewAll;
+    private RecyclerView mRecyclerViewAllNotes;
 
     public static final String tempString = "subject_fragment_all";
 
@@ -93,7 +92,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     }
 
     public void setArgParam1(String param1) {
-        this.mFileID = param1;
+        this.mNoteIndex = param1;
     }
 
 
@@ -110,7 +109,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         if (getArguments () != null) {
-            mFileID = getArguments ().getString (ARG_PARAM1);
+            mNoteIndex = getArguments ().getString (ARG_PARAM1);
             mTabPosition = getArguments ().getString (ARG_PARAM2);
         }
 
@@ -140,8 +139,8 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
 
     // TODOo: Rename method, update argument and hook method into UI event
     public void listDataSetChanged() {
-        if (mListener != null) {
-            mListener.onFragmentInteraction (this.getClass ().getName (), null);
+        if (mOnFragmentInteractionListener != null) {
+            mOnFragmentInteractionListener.onFragmentInteraction (this.getClass ().getName (), null);
         } else
             Toast.makeText (getActivity (), "Couldn't update the list!", Toast.LENGTH_LONG).show ();
     }
@@ -151,12 +150,12 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         super.onAttach (activity);
         //Toast.makeText(getActivity(), "onAttach in fragmentAll", Toast.LENGTH_SHORT).show();
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mOnFragmentInteractionListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString ()
                     + " must implement OnFragmentInteractionListener");
         }
-//        ((StartupPage)activity).onSectionAttached (Integer.parseInt (mFileID));
+//        ((StartupPage)activity).onSectionAttached (Integer.parseInt (mNoteIndex));
     }
 
     @Override
@@ -171,33 +170,33 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         FloatingActionButton btnAddNotes = (FloatingActionButton) getActivity ().findViewById (R.id.buttonAddNotes);
         btnAddNotes.setOnClickListener (this);
 //        mListViewAll = (ListView) getActivity ().findViewById (R.id.listNotesAll);
-        mRecyclerViewAll = (RecyclerView) getActivity ().findViewById (R.id.recyclerNotesAll);
+        mRecyclerViewAllNotes = (RecyclerView) getActivity ().findViewById (R.id.recyclerNotesAll);
 
         mHandlerAll = new Handler () {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case Util.POPULATE_LIST_VIEW:// if receive massage
+                    case GlobalData.POPULATE_LIST_VIEW:// if receive massage
                         //populateListView();
                         listDataSetChanged ();
                 }
             }
         };
 
-        mNotesListAllNotes = new ArrayList<> ();
+        mArrayListAllNotes = new ArrayList<> ();
 
-//        mCustomAdapterAllNotes = new CustomAdapter (mNotesListAllNotes, getActivity (), tempString, mHandlerAll);
-        mRecyclerViewAll.setHasFixedSize (true);
-        mCustomRecyclerAdapterAllNotes = new RecyclerViewAdapter (mNotesListAllNotes, getActivity (), tempString);
+//        mCustomAdapterAllNotes = new CustomAdapter (mArrayListAllNotes, getActivity (), tempString, mHandlerAll);
+        mRecyclerViewAllNotes.setHasFixedSize (true);
+        mCustomRecyclerViewAdapterAllNotes = new RecyclerViewAdapter (mArrayListAllNotes, getActivity (), tempString);
 
-        mRecyclerViewAll.setAdapter (mCustomRecyclerAdapterAllNotes);
-        mCustomRecyclerAdapterAllNotes.setOnListAdapterInteractionListener (this);
+        mRecyclerViewAllNotes.setAdapter (mCustomRecyclerViewAdapterAllNotes);
+        mCustomRecyclerViewAdapterAllNotes.setOnListAdapterInteractionListener (this);
         LinearLayoutManager llm = new LinearLayoutManager (getActivity ());
         llm.setOrientation (LinearLayoutManager.VERTICAL);
-        mRecyclerViewAll.setLayoutManager (llm);
+        mRecyclerViewAllNotes.setLayoutManager (llm);
         populateListView ();
 //        mCustomAdapterAllNotes.setOnListAdapterInteractionListener (this);
-//        mListViewAll.setTag (R.string.filename, mFileID);
-//        mListViewAll.setTag (R.string.list_object, mNotesListAllNotes);
+//        mListViewAll.setTag (R.string.filename, mNoteIndex);
+//        mListViewAll.setTag (R.string.list_object, mArrayListAllNotes);
 //        mListViewAll.setAdapter (mCustomAdapterAllNotes);
 //        mListViewAll.setItemsCanFocus (true);
 //        populateListView ();
@@ -210,7 +209,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
 //
 //            @Override
 //            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-////                mCustomRecyclerAdapterAllNotes.getFilter().filter(charSequence.toString());
+////                mCustomRecyclerViewAdapterAllNotes.getFilter().filter(charSequence.toString());
 //                Toast.makeText (getActivity (), "change: "+charSequence+"ch", Toast.LENGTH_SHORT).show ();
 //            }
 //
@@ -224,7 +223,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     @Override
     public void onDetach() {
         super.onDetach ();
-        mListener = null;
+        mOnFragmentInteractionListener = null;
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -277,10 +276,10 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             return;
         JSONObject jsonObject = new JSONObject ();
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        String allNote = databaseAdapter.getNote (Long.parseLong (mFileID) + 1);
+        String allNote = databaseAdapter.getNote (Long.parseLong (mNoteIndex) + 1);
         JSONArray js = new JSONArray ();
         if (DEBUG)
-            Log.d (TAG, "onClick allNote = " + allNote + " SubjectId -1 = " + mFileID + " empty json = " + js + " empty 2nd =" + js.toString ());
+            Log.d (TAG, "onClick allNote = " + allNote + " SubjectId -1 = " + mNoteIndex + " empty json = " + js + " empty 2nd =" + js.toString ());
         JSONArray jsonArray = new JSONArray ();
         try {
             if (allNote != null) {
@@ -295,16 +294,16 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         try {
             int length;
             length = jsonArray.length ();
-            jsonObject.put (Util.NOTE_INDEX, length);
-            jsonObject.put (Util.NOTE_TITLE, title);
-            jsonObject.put (Util.NOTE_BODY, note);
-            jsonObject.put (Util.NOTE_IS_STAR, false);
+            jsonObject.put (GlobalData.NOTE_INDEX, length);
+            jsonObject.put (GlobalData.NOTE_TITLE, title);
+            jsonObject.put (GlobalData.NOTE_BODY, note);
+            jsonObject.put (GlobalData.NOTE_IS_STAR, false);
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm", Locale.US);
             long timeInMillis = System.currentTimeMillis ();
             String date = simpleDateFormat.format (new Date ());
-            jsonObject.put (Util.NOTE_DATE_STAMP, date);
-            jsonObject.put (Util.NOTE_TIME_MILLIS, timeInMillis);
+            jsonObject.put (GlobalData.NOTE_DATE_STAMP, date);
+            jsonObject.put (GlobalData.NOTE_TIME_MILLIS, timeInMillis);
             jsonArray.put (length, jsonObject);
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -312,7 +311,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             if (DEBUG) Log.d (TAG, "onClick 1." + getString (R.string.file_could_not_update_str));
         }
         Boolean bool;
-        bool = databaseAdapter.setNote (Long.valueOf (mFileID) + 1, jsonArray.toString ());
+        bool = databaseAdapter.setNote (Long.valueOf (mNoteIndex) + 1, jsonArray.toString ());
         if (DEBUG) Log.d (TAG, "onClick checking JSONArray" + jsonArray.toString ());
         if (bool) {
             populateListView ();
@@ -337,7 +336,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
                     NoteUtil noteUtil = new NoteUtil (getActivity ());
                     try {
                         JSONObject jsonObjectNote = new JSONObject (data3);
-                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Long.valueOf (mFileID) + 1);
+                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Long.valueOf (mNoteIndex) + 1);
                         if (DEBUG)
                             Toast.makeText (getActivity (), "Note Added " + bool, Toast.LENGTH_SHORT).show ();
                         populateListView ();
@@ -377,7 +376,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
      */
     public void populateListView(String query) {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        String allNote = databaseAdapter.getNote (Long.parseLong (mFileID) + 1);
+        String allNote = databaseAdapter.getNote (Long.parseLong (mNoteIndex) + 1);
         JSONArray jsonArray = new JSONArray ();
         try {
             if (allNote != null)
@@ -386,31 +385,31 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             e.printStackTrace ();
             Toast.makeText (getActivity (), R.string.all_note_is_corrupted_err_str, Toast.LENGTH_LONG).show ();
         }
-        mNotesListAllNotes.clear ();
-        // Toast.makeText(getActivity(), " 1. noteList"+mNotesListAllNotes.toString(), Toast.LENGTH_SHORT).show();
+        mArrayListAllNotes.clear ();
+        // Toast.makeText(getActivity(), " 1. noteList"+mArrayListAllNotes.toString(), Toast.LENGTH_SHORT).show();
 
         for (int count = 0; count < jsonArray.length (); count++) {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject (count);
                 String temp = jsonObject.toString ();
-                String noteTitle = jsonObject.getString (Util.NOTE_TITLE);
-                String noteBody = jsonObject.getString (Util.NOTE_BODY);
+                String noteTitle = jsonObject.getString (GlobalData.NOTE_TITLE);
+                String noteBody = jsonObject.getString (GlobalData.NOTE_BODY);
                 if ((noteBody.toLowerCase ()).contains (query.toLowerCase ()) || (noteTitle.toLowerCase ()).contains (query.toLowerCase ()) || query.equals ("")) {
-                    mNotesListAllNotes.add (temp);
+                    mArrayListAllNotes.add (temp);
                 }
             } catch (JSONException e) {
                 e.printStackTrace ();
                 Toast.makeText (getActivity (), R.string.updating_list_failed_err_str, Toast.LENGTH_LONG).show ();
             }
         }
-        //  Toast.makeText(getActivity(), " 2. noteList"+mNotesListAllNotes.toString(), Toast.LENGTH_SHORT).show();
-//        mCustomAdapterAllNotes.setFileID (mFileID);
+        //  Toast.makeText(getActivity(), " 2. noteList"+mArrayListAllNotes.toString(), Toast.LENGTH_SHORT).show();
+//        mCustomAdapterAllNotes.setNoteIndex (mNoteIndex);
 //        mListViewAll.setAdapter (mCustomAdapterAllNotes);
 //        //Toast.makeText(getActivity(), "adapt attached " +mListViewAll.getAdapter() , Toast.LENGTH_SHORT).show();
 //        mCustomAdapterAllNotes.notifyDataSetChanged ();
 
-        mCustomRecyclerAdapterAllNotes.setFileID (mFileID);
-        mRecyclerViewAll.setAdapter (mCustomRecyclerAdapterAllNotes);
-        mCustomRecyclerAdapterAllNotes.notifyDataSetChanged ();
+        mCustomRecyclerViewAdapterAllNotes.setNoteIndex (mNoteIndex);
+        mRecyclerViewAllNotes.setAdapter (mCustomRecyclerViewAdapterAllNotes);
+        mCustomRecyclerViewAdapterAllNotes.notifyDataSetChanged ();
     }
 }

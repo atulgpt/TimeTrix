@@ -4,7 +4,7 @@ package com.atulgpt.www.timetrix.Utils;
  * Created by atulgupta on 04-03-2016 at 06:28 PM.
  * Contains various constants and strings
  */
-public class Util {
+public class GlobalData {
     public static final String PREF_SETTINGS = "sharedPreferences";
     public static final String IS_NOTIFICATION_ENABLED = "isNotificationIsEnabledOrNot";
     public static final String IS_PASSWORD_ENABLED = "isPasswordEnabledOrNot";

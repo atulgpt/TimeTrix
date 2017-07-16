@@ -33,8 +33,8 @@ import com.atulgpt.www.timetrix.Fragments.FragmentAllNotes;
 import com.atulgpt.www.timetrix.Fragments.FragmentStarredNotes;
 import com.atulgpt.www.timetrix.Fragments.FragmentTagNotes;
 import com.atulgpt.www.timetrix.Fragments.NavigationDrawerFragment;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 import com.atulgpt.www.timetrix.Utils.SharedPrefsUtil;
-import com.atulgpt.www.timetrix.Utils.Util;
 
 import java.util.ArrayList;
 
@@ -136,18 +136,18 @@ public class StartupPage extends AppCompatActivity implements
             Log.d (TAG, "onNavigationDrawerItemSelected in add another before adjusting for header view" + position);
         if (position <= 0)
             return;
-        if(DEBUG) Log.d (TAG, "onNavigationDrawerItemSelected: val: "+getIntent ().getLongExtra (Util.RESUME_STATE_FILE_ID,-1));
-        if (getIntent ().getLongExtra (Util.RESUME_STATE_FILE_ID, -1) >= 0) {
-            mFileID = getIntent ().getLongExtra (Util.RESUME_STATE_FILE_ID, -1);
-            getIntent ().putExtra (Util.RESUME_STATE_FILE_ID,-1);
+        if(DEBUG) Log.d (TAG, "onNavigationDrawerItemSelected: val: "+getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID,-1));
+        if (getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID, -1) >= 0) {
+            mFileID = getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID, -1);
+            getIntent ().putExtra (GlobalData.RESUME_STATE_FILE_ID,-1);
         } else {
             mFileID = position - 1;
         }
         onSectionAttached (mFileID);
         if (mDatabaseAdapter.countRows () == position - 1) {
-            Intent intent = new Intent (StartupPage.this, AddAnotherSubject.class);
+            Intent intent = new Intent (StartupPage.this, AddAnotherSection.class);
             if (position == 1) {
-                intent.putExtra (Util.ADD_ANOTHER_SUB_HOME, false);
+                intent.putExtra (GlobalData.ADD_ANOTHER_SUB_HOME, false);
             }
             startActivity (intent);
             StartupPage.this.finish ();
@@ -208,7 +208,7 @@ public class StartupPage extends AppCompatActivity implements
                 public boolean onClose() {
                     //some operation
                     populateListView ();
-                    return false;
+                    return true;
                 }
             });
             searchView.setOnSearchClickListener (new View.OnClickListener () {
@@ -228,7 +228,7 @@ public class StartupPage extends AppCompatActivity implements
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    populateListViewWithQuery (charSequence.toString ());
+                    populateListViewWithSearchQuery (charSequence.toString ());
                 }
 
                 @Override
@@ -243,7 +243,7 @@ public class StartupPage extends AppCompatActivity implements
                 public boolean onQueryTextSubmit(String query) {
                     // use this method when query submitted
 //                    Toast.makeText(StartupPage.this, query, Toast.LENGTH_SHORT).show();
-//                    populateListViewWithQuery (query);
+//                    populateListViewWithSearchQuery (query);
                     return false;
                 }
 
@@ -280,8 +280,8 @@ public class StartupPage extends AppCompatActivity implements
             Toast.makeText (StartupPage.this, "search btn clicked", Toast.LENGTH_SHORT).show ();
         }
         if (id == R.id.action_detail_sub) {
-            Intent intent = new Intent (StartupPage.this, SubjectDetailsActivity.class);
-            intent.putExtra (Util.FILE_ID, mFileID);
+            Intent intent = new Intent (StartupPage.this, NoteDetailsActivity.class);
+            intent.putExtra (GlobalData.FILE_ID, mFileID);
             StartupPage.this.finish ();
             startActivity (intent);
         }
@@ -308,7 +308,7 @@ public class StartupPage extends AppCompatActivity implements
             builder.show ();
         }
         if (id == R.id.action_settings) {
-            Intent intent = new Intent (this, Settings.class);
+            Intent intent = new Intent (this, SettingsActivity.class);
             startActivity (intent);
             StartupPage.this.finish ();
             return true;
@@ -341,7 +341,7 @@ public class StartupPage extends AppCompatActivity implements
                         return;
                     }
                     Intent email = new Intent (Intent.ACTION_SEND);
-                    email.putExtra (Intent.EXTRA_EMAIL, new String[]{Util.APP_DEV_EMAIL});
+                    email.putExtra (Intent.EXTRA_EMAIL, new String[]{GlobalData.APP_DEV_EMAIL});
                     email.putExtra (Intent.EXTRA_SUBJECT, feedbackTitle);
                     email.putExtra (Intent.EXTRA_TEXT, feedback);
                     email.setType ("message/rfc822");
@@ -393,25 +393,25 @@ public class StartupPage extends AppCompatActivity implements
         if (DEBUG) Log.d (TAG, "populateListView  tab position :" + position);
     }
 
-    private void populateListViewWithQuery(String query) {
+    private void populateListViewWithSearchQuery(String searchQuery) {
         int position = mViewPager.getCurrentItem ();
         if (position == 0) {
             FragmentAllNotes fragmentAllNotes = (FragmentAllNotes) mRegisteredFragments.get (position);
             if (fragmentAllNotes != null) {
-                fragmentAllNotes.populateListView (query);
+                fragmentAllNotes.populateListView (searchQuery);
             }
 //            Toast.makeText(StartupPage.this, "in populate"+ position, Toast.LENGTH_SHORT).show();
         }
         if (position == 1) {
             FragmentStarredNotes fragmentStarredNotes = (FragmentStarredNotes) mRegisteredFragments.get (position);
             if (fragmentStarredNotes != null) {
-                fragmentStarredNotes.populateListView (query);
+                fragmentStarredNotes.populateListView (searchQuery);
             }
         }
         if (position == 2) {
             FragmentTagNotes fragmentTagNotes = (FragmentTagNotes) mRegisteredFragments.get (position);
             if (fragmentTagNotes != null) {
-                fragmentTagNotes.populateListView (query);
+                fragmentTagNotes.populateListView (searchQuery);
             }
         }
     }

@@ -7,22 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.atulgpt.www.timetrix.Utils.Util;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 import com.atulgpt.www.timetrix.dataBinders.SubjectsDetailsBinder;
 import com.atulgpt.www.timetrix.databinding.ActivitySubjectDetailsBinding;
 
-public class SubjectDetailsActivity extends AppCompatActivity {
+public class NoteDetailsActivity extends AppCompatActivity {
     private long mFileID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        mFileID = getIntent ().getLongExtra (Util.FILE_ID,1);
+        mFileID = getIntent ().getLongExtra (GlobalData.FILE_ID,1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSubDetail);
         setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         ActivitySubjectDetailsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_subject_details);
-//        Toast.makeText (SubjectDetailsActivity.this, "file id ="+getIntent ().getLongExtra (Util.FILE_ID,-1), Toast.LENGTH_LONG).show ();
-        SubjectsDetailsBinder subject = new SubjectsDetailsBinder (SubjectDetailsActivity.this,mFileID + 1);
+//        Toast.makeText (NoteDetailsActivity.this, "file id ="+getIntent ().getLongExtra (GlobalData.FILE_ID,-1), Toast.LENGTH_LONG).show ();
+        SubjectsDetailsBinder subject = new SubjectsDetailsBinder (NoteDetailsActivity.this,mFileID + 1);
         binding.setSubject (subject);
         if (actionBar != null ) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -39,13 +39,13 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent (this, Settings.class);
+            Intent intent = new Intent (this, SettingsActivity.class);
             startActivity (intent);
             return true;
         }
         if(id == android.R.id.home){
-            Intent intent = new Intent(SubjectDetailsActivity.this, StartupPage.class);
-            SubjectDetailsActivity.this.finish ();
+            Intent intent = new Intent(NoteDetailsActivity.this, StartupPage.class);
+            NoteDetailsActivity.this.finish ();
             startActivity(intent);
             return true;
         }
@@ -55,11 +55,8 @@ public class SubjectDetailsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        SubjectDetailsActivity.this.finish ();
-        startActivity (new Intent (SubjectDetailsActivity.this,StartupPage.class).putExtra (Util.RESUME_STATE_FILE_ID,mFileID));
+        NoteDetailsActivity.this.finish ();
+        startActivity (new Intent (NoteDetailsActivity.this,StartupPage.class).putExtra (GlobalData.RESUME_STATE_FILE_ID,mFileID));
     }
 }
 
-class subject{
-
-}

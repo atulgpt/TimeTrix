@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.Utils.NoteUtil;
-import com.atulgpt.www.timetrix.Utils.Util;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,18 +122,18 @@ public class CustomAdapterTags extends BaseExpandableListAdapter {
             e.printStackTrace ();
         }
         try {
-            noteText = jsonObject.getString (Util.NOTE_BODY);
+            noteText = jsonObject.getString (GlobalData.NOTE_BODY);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         try {
-            noteTimeInMillis = jsonObject.getLong (Util.NOTE_TIME_MILLIS);
+            noteTimeInMillis = jsonObject.getLong (GlobalData.NOTE_TIME_MILLIS);
             noteDateStamp = (String) DateUtils.getRelativeTimeSpanString (noteTimeInMillis, System.currentTimeMillis (), 3, DateUtils.FORMAT_ABBREV_RELATIVE);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
         try {
-            titleText = jsonObject.getString (Util.NOTE_TITLE);
+            titleText = jsonObject.getString (GlobalData.NOTE_TITLE);
         } catch (JSONException e) {
             e.printStackTrace ();
         }

@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.atulgpt.www.timetrix.Utils.Util;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,13 +103,13 @@ public class DatabaseAdapter {
 //            Toast.makeText(mContext,"index = "+index+" cursor count = "+cursor.getCount()+"id = "+id,Toast.LENGTH_LONG).show();
             String temp = cursor.getString (cursor.getColumnIndex (DatabaseHelper.KEY_SUB_NAME));
             try {
-                jsonObject.put (Util.SUBJECT_NAME, temp);
+                jsonObject.put (GlobalData.SUBJECT_NAME, temp);
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
             temp = cursor.getString (cursor.getColumnIndex (DatabaseHelper.KEY_PROF_NAME));
             try {
-                jsonObject.put (Util.PROF_NAME, temp);
+                jsonObject.put (GlobalData.PROF_NAME, temp);
             } catch (JSONException e) {
                 e.printStackTrace ();
             }

@@ -12,9 +12,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Utils.Util;
+import com.atulgpt.www.timetrix.Utils.GlobalData;
 
-public class AddAnotherSubject extends AppCompatActivity {
+public class AddAnotherSection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,8 @@ public class AddAnotherSubject extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAddSub);
         setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-//        Toast.makeText (AddAnotherSubject.this, "bool in addAnother"+getIntent ().getBooleanExtra (Util.ADD_ANOTHER_SUB_HOME,true), Toast.LENGTH_SHORT).show ();
-        if (actionBar != null && getIntent ().getBooleanExtra (Util.ADD_ANOTHER_SUB_HOME,true) ) {
+//        Toast.makeText (AddAnotherSection.this, "bool in addAnother"+getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SUB_HOME,true), Toast.LENGTH_SHORT).show ();
+        if (actionBar != null && getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SUB_HOME,true) ) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -34,15 +34,15 @@ public class AddAnotherSubject extends AppCompatActivity {
         final EditText editProfName = (EditText) findViewById(R.id.editTextProfName);
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DatabaseAdapter databaseAdapter = new DatabaseAdapter(AddAnotherSubject.this);
+                DatabaseAdapter databaseAdapter = new DatabaseAdapter(AddAnotherSection.this);
                 if (editSubName.getText().toString().isEmpty()) {
-                    Toast.makeText(AddAnotherSubject.this, R.string.empty_sub_name_not_to_str, Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddAnotherSection.this, R.string.empty_sub_name_not_to_str, Toast.LENGTH_LONG).show();
                     return;
                 }
                 databaseAdapter.addTable (editSubName.getText ().toString (), editProfName.getText ().toString ());
-                Intent intent = new Intent(AddAnotherSubject.this, StartupPage.class);
+                Intent intent = new Intent(AddAnotherSection.this, StartupPage.class);
                 startActivity(intent);
-                AddAnotherSubject.this.finish ();
+                AddAnotherSection.this.finish ();
             }
         });
 
@@ -64,14 +64,14 @@ public class AddAnotherSubject extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent (this, SettingsActivity.class);
+            Intent intent = new Intent (this, SettingsPreferenceActivity.class);
             startActivity (intent);
             return true;
         }
         if(id == android.R.id.home){
-            Intent intent = new Intent(AddAnotherSubject.this, StartupPage.class);
+            Intent intent = new Intent(AddAnotherSection.this, StartupPage.class);
             startActivity(intent);
-            AddAnotherSubject.this.finish ();
+            AddAnotherSection.this.finish ();
             return true;
         }
 
@@ -80,12 +80,12 @@ public class AddAnotherSubject extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(!getIntent ().getBooleanExtra (Util.ADD_ANOTHER_SUB_HOME,true)){
-            AddAnotherSubject.this.finish ();
+        if(!getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SUB_HOME,true)){
+            AddAnotherSection.this.finish ();
         }else {
-            Intent intent = new Intent(AddAnotherSubject.this, StartupPage.class);
+            Intent intent = new Intent(AddAnotherSection.this, StartupPage.class);
             startActivity(intent);
-            AddAnotherSubject.this.finish ();
+            AddAnotherSection.this.finish ();
         }
     }
 }
