@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Utils;
+package com.atulgpt.www.timetrix.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

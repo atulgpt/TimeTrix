@@ -16,7 +16,7 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/testInputLayoutEnterSubject"
+        android:id="@+id/testInputLayoutEnterSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbarAddSub"
@@ -26,31 +26,33 @@
         android:layout_marginTop="7dp">
 
         <EditText
-            android:id="@+id/editTextSubName"
+            android:id="@+id/editTextSectionName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_sub_name_str"
-            android:singleLine="true"/>
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/testInputLayoutEnterProf"
+        android:id="@+id/testInputLayoutEnterDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/testInputLayoutEnterSubject"
+        android:layout_below="@+id/testInputLayoutEnterSection"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp">
 
         <EditText
-            android:id="@+id/editTextProfName"
+            android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_prof_name_str"
-            android:singleLine="true"/>
+            android:hint="@string/enter_note_desc_str"
+            android:maxLines="1"
+            android:lines="4"
+            android:gravity="top|start"/>
     </android.support.design.widget.TextInputLayout>
-
+<!--
     <android.support.design.widget.TextInputLayout
         android:id="@+id/testInputLayoutEnterWeight"
         android:layout_width="match_parent"
@@ -66,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_weight_str"
-            android:singleLine="true"/>
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -84,16 +86,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_lec_address_str"
-            android:singleLine="true"/>
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
-
+-->
     <Button
         android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/testInputLayoutEnterLectureHall"
+        android:layout_below="@+id/testInputLayoutEnterDescription"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"

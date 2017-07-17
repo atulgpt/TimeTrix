@@ -15,9 +15,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
-import com.atulgpt.www.timetrix.Utils.SharedPrefsUtil;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.SharedPrefsUtil;
 //import com.facebook.CallbackManager;
 //import com.facebook.FacebookCallback;
 //import com.facebook.FacebookException;

@@ -15,8 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -26,15 +24,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Fragments.FragmentAllNotes;
-import com.atulgpt.www.timetrix.Fragments.FragmentStarredNotes;
-import com.atulgpt.www.timetrix.Fragments.FragmentTagNotes;
-import com.atulgpt.www.timetrix.Fragments.NavigationDrawerFragment;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
-import com.atulgpt.www.timetrix.Utils.SharedPrefsUtil;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.fragments.FragmentAllNotes;
+import com.atulgpt.www.timetrix.fragments.FragmentStarredNotes;
+import com.atulgpt.www.timetrix.fragments.FragmentTagNotes;
+import com.atulgpt.www.timetrix.fragments.NavigationDrawerFragment;
+import com.atulgpt.www.timetrix.utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.SharedPrefsUtil;
 
 import java.util.ArrayList;
 
@@ -43,7 +40,8 @@ public class StartupPage extends AppCompatActivity implements
         NavigationDrawerFragment.NavigationDrawerCallbacks,
         FragmentAllNotes.OnFragmentInteractionListener,
         FragmentStarredNotes.OnFragmentInteractionListener,
-        FragmentTagNotes.OnFragmentInteractionListener {
+        FragmentTagNotes.OnFragmentInteractionListener,
+        SearchView.OnQueryTextListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -88,7 +86,7 @@ public class StartupPage extends AppCompatActivity implements
 //
 //            }
 //        });
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mFileID = savedInstanceState.getLong (STATE_SELECTED_POSITION);
         }
         mViewPager = (ViewPager) this.findViewById (R.id.pager);
@@ -136,10 +134,11 @@ public class StartupPage extends AppCompatActivity implements
             Log.d (TAG, "onNavigationDrawerItemSelected in add another before adjusting for header view" + position);
         if (position <= 0)
             return;
-        if(DEBUG) Log.d (TAG, "onNavigationDrawerItemSelected: val: "+getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID,-1));
+        if (DEBUG)
+            Log.d (TAG, "onNavigationDrawerItemSelected: val: " + getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID, -1));
         if (getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID, -1) >= 0) {
             mFileID = getIntent ().getLongExtra (GlobalData.RESUME_STATE_FILE_ID, -1);
-            getIntent ().putExtra (GlobalData.RESUME_STATE_FILE_ID,-1);
+            getIntent ().putExtra (GlobalData.RESUME_STATE_FILE_ID, -1);
         } else {
             mFileID = position - 1;
         }
@@ -198,63 +197,29 @@ public class StartupPage extends AppCompatActivity implements
             restoreActionBar ();
             menu.findItem (R.id.action_mute).setChecked (!sharedPrefsUtil.isNotificationEnabled ());
 
-            MenuItem searchItem = menu.findItem (R.id.action_note_search);
-            SearchView searchView;
+            final MenuItem searchItem = menu.findItem (R.id.action_note_search);
+            final SearchView searchView;
 
             searchView = (SearchView) MenuItemCompat.getActionView (searchItem);
+            searchView.setIconifiedByDefault (true);
             searchView.setQueryHint ("Search");
             searchView.setOnCloseListener (new SearchView.OnCloseListener () {
                 @Override
                 public boolean onClose() {
-                    //some operation
-                    populateListView ();
-                    return true;
+                    if (!searchView.getQuery ().toString ().isEmpty ()) {
+                        populateListView ();
+                    } else {
+                        searchView.setQuery ("", false);
+                        searchView.clearFocus ();
+                        return false;
+                    }
+                    return false;
                 }
             });
-            searchView.setOnSearchClickListener (new View.OnClickListener () {
-                @Override
-                public void onClick(View v) {
-
-                    //some operation
-                }
-            });
-            EditText searchPlate = (EditText) searchView.findViewById (android.support.v7.appcompat.R.id.search_src_text);
-//            searchPlate.setHint("Search2");
-            searchPlate.addTextChangedListener (new TextWatcher () {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    populateListViewWithSearchQuery (charSequence.toString ());
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                }
-            });
+            SearchView.OnQueryTextListener on = this;
+            searchView.setOnQueryTextListener (on);
             View searchPlateView = searchView.findViewById (android.support.v7.appcompat.R.id.search_plate);
             searchPlateView.setBackgroundColor (ContextCompat.getColor (this, android.R.color.transparent));
-            // use this method for search process
-            searchView.setOnQueryTextListener (new SearchView.OnQueryTextListener () {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    // use this method when query submitted
-//                    Toast.makeText(StartupPage.this, query, Toast.LENGTH_SHORT).show();
-//                    populateListViewWithSearchQuery (query);
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    // use this method for auto complete search process
-                    return false;
-                }
-            });
-
-            //Log.d("atul","drawer is not open");
             return true;
         } else {
             getMenuInflater ().inflate (R.menu.menu_startup_page, menu);
@@ -277,12 +242,12 @@ public class StartupPage extends AppCompatActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_note_search) {
-            Toast.makeText (StartupPage.this, "search btn clicked", Toast.LENGTH_SHORT).show ();
+            //Toast.makeText (StartupPage.this, "search btn clicked", Toast.LENGTH_SHORT).show ();
         }
         if (id == R.id.action_detail_sub) {
             Intent intent = new Intent (StartupPage.this, NoteDetailsActivity.class);
             intent.putExtra (GlobalData.FILE_ID, mFileID);
-            StartupPage.this.finish ();
+            //StartupPage.this.finish ();
             startActivity (intent);
         }
         if (id == R.id.action_delete_sub) {
@@ -416,11 +381,40 @@ public class StartupPage extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Called when the user submits the query. This could be due to a key press on the
+     * keyboard or due to pressing a submit button.
+     * The listener can override the standard behavior by returning true
+     * to indicate that it has handled the submit request. Otherwise return false to
+     * let the SearchView handle the submission by launching any associated intent.
+     *
+     * @param query the query text that is to be submitted
+     * @return true if the query has been handled by the listener, false to let the
+     * SearchView perform the default action.
+     */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return true;
+    }
 
-    class PagerAdapter extends FragmentPagerAdapter {
+    /**
+     * Called when the query text is changed by the user.
+     *
+     * @param newText the new content of the query text field.
+     * @return false if the SearchView should perform the default action of showing any
+     * suggestions if available, true if the action was handled by the listener.
+     */
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        populateListViewWithSearchQuery (newText);
+        return true;
+    }
+
+
+    private class PagerAdapter extends FragmentPagerAdapter {
         final String[] tabTitles;
 
-        public PagerAdapter(android.support.v4.app.FragmentManager fm) {
+        PagerAdapter(android.support.v4.app.FragmentManager fm) {
             super (fm);
             tabTitles = getResources ().getStringArray (R.array.tabs_name);
         }

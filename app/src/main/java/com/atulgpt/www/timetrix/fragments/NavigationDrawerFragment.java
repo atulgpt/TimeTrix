@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Fragments;
+package com.atulgpt.www.timetrix.fragments;
 
 
 import android.app.Activity;
@@ -20,8 +20,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.atulgpt.www.timetrix.Adapters.CustomAdapter;
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.adapters.CustomAdapter;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.R;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Utils;
+package com.atulgpt.www.timetrix.utils;
 
 /**
  * Created by atulgupta on 04-03-2016 at 06:28 PM.

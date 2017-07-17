@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Fragments;
+package com.atulgpt.www.timetrix.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -24,12 +24,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.Adapters.CustomAdapter;
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Adapters.RecyclerViewAdapter;
+import com.atulgpt.www.timetrix.adapters.CustomAdapter;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.adapters.RecyclerViewAdapter;
 import com.atulgpt.www.timetrix.R;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
-import com.atulgpt.www.timetrix.Utils.NoteUtil;
+import com.atulgpt.www.timetrix.utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.NoteUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

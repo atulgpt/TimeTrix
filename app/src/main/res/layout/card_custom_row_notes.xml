@@ -7,7 +7,10 @@
     android:layout_height="wrap_content"
     android:layout_margin="1dp"
     card_view:cardCornerRadius="2dp"
-    card_view:contentPadding="1dp"
+    card_view:contentPaddingLeft="16dp"
+    card_view:contentPaddingRight="16dp"
+    card_view:contentPaddingTop="7dp"
+    card_view:contentPaddingBottom="7dp"
     card_view:cardElevation="2dp"
     card_view:cardMaxElevation="8dp"
     android:clickable="true"
@@ -26,8 +29,6 @@
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="-4dp"
-            android:layout_marginRight="-4dp"
             android:layout_marginTop="0dp"
             android:background="@drawable/ic_more_vert_black_24dp"
             android:contentDescription="@string/context_menu_description_str"
@@ -44,15 +45,13 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/testViewNotesTitle"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
             android:alpha="0.7"
             android:paddingBottom="3dp"
             android:text="@string/lorem_ipsum_str"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000"
             android:textSize="17sp"
+            android:maxLength="100"
             />
 
         <TextView
@@ -62,14 +61,11 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="-2dp"
             android:alpha="0.9"
             android:text="@string/lorem_ipsum_str"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000"
-            android:textSize="24sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/testViewNotesDate"
@@ -78,7 +74,6 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
             android:layout_marginEnd="7dp"
             android:layout_marginRight="7dp"
             android:drawableLeft="@drawable/ic_access_time_black_18dp"

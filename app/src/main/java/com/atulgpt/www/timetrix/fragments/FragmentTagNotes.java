@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Fragments;
+package com.atulgpt.www.timetrix.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -15,11 +15,11 @@ import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.Adapters.CustomAdapter;
-import com.atulgpt.www.timetrix.Adapters.CustomAdapterTags;
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.adapters.CustomAdapter;
+import com.atulgpt.www.timetrix.adapters.CustomAdapterTags;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.R;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.GlobalData;
 
 import org.json.JSONArray;
 import org.json.JSONException;

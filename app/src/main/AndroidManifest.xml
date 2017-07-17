@@ -30,7 +30,7 @@
         </activity>
 
         <receiver
-            android:name=".Utils.Alarm"
+            android:name=".utils.Alarm"
             android:process=":remote"/>
 
         <activity

@@ -11,15 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.utils.GlobalData;
 
 public class AddAnotherSection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_another_subject);
+        setContentView(R.layout.activity_add_another_section);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAddSub);
         setSupportActionBar(toolbar);
@@ -30,16 +30,16 @@ public class AddAnotherSection extends AppCompatActivity {
         }
 
         Button done = (Button) findViewById(R.id.done);
-        final EditText editSubName = (EditText) findViewById(R.id.editTextSubName);
-        final EditText editProfName = (EditText) findViewById(R.id.editTextProfName);
+        final EditText editTextSectionName = (EditText) findViewById(R.id.editTextSectionName);
+        final EditText editTextDescription = (EditText) findViewById(R.id.editTextDescription);
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DatabaseAdapter databaseAdapter = new DatabaseAdapter(AddAnotherSection.this);
-                if (editSubName.getText().toString().isEmpty()) {
+                if (editTextSectionName.getText().toString().isEmpty()) {
                     Toast.makeText(AddAnotherSection.this, R.string.empty_sub_name_not_to_str, Toast.LENGTH_LONG).show();
                     return;
                 }
-                databaseAdapter.addTable (editSubName.getText ().toString (), editProfName.getText ().toString ());
+                databaseAdapter.addTable (editTextSectionName.getText ().toString (), editTextDescription.getText ().toString ());
                 Intent intent = new Intent(AddAnotherSection.this, StartupPage.class);
                 startActivity(intent);
                 AddAnotherSection.this.finish ();

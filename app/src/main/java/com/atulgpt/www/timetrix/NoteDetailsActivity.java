@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.atulgpt.www.timetrix.Utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.GlobalData;
 import com.atulgpt.www.timetrix.dataBinders.SubjectsDetailsBinder;
 import com.atulgpt.www.timetrix.databinding.ActivitySubjectDetailsBinding;
 

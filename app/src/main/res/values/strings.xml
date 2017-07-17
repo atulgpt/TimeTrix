@@ -44,7 +44,7 @@
     <string name="expired_str">Tags</string>
     <string name="search_the_notes_str">Search the notes</string>
     <string name="add_another_subject_str">Add another section</string>
-    <string name="title_activity_add_another_subject">Add another sectiont</string>
+    <string name="title_activity_add_another_subject">Add another section</string>
     <string name="oops_made_a_mistake_str">Oops! Made a mistake!</string>
     <string name="undo_str">Undo</string>
     <string name="all_note_is_corrupted_err_str">allNote is corrupted</string>
@@ -58,7 +58,7 @@
     <string name="back_str">Back</string>
     <string name="enter_lec_address_str">Enter lecture address</string>
     <string name="enter_weight_str">Enter weightage</string>
-    <string name="enter_prof_name_str">Enter prof name</string>
+    <string name="enter_note_desc_str">Enter description</string>
     <string name="enter_sub_name_str">Enter the section name</string>
     <string name="first_time_use_app_str">First time using the app! Don\'t worry just fill in the following details!</string>
     <string name="subjects_str">Subjects</string>

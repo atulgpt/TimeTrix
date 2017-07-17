@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.Utils.SharedPrefsUtil;
+import com.atulgpt.www.timetrix.utils.SharedPrefsUtil;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

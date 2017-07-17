@@ -41,10 +41,11 @@
 
     <fragment
         android:id="@+id/navigation_drawer"
-        class="com.atulgpt.www.timetrix.Fragments.NavigationDrawerFragment"
+        class="com.atulgpt.www.timetrix.fragments.NavigationDrawerFragment"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         tools:layout="@layout/fragment_navigation_drawer" />
+
 
 </android.support.v4.widget.DrawerLayout>

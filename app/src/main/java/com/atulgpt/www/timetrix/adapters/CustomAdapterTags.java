@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Adapters;
+package com.atulgpt.www.timetrix.adapters;
 
 import android.content.Context;
 import android.text.format.DateUtils;
@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.atulgpt.www.timetrix.R;
-import com.atulgpt.www.timetrix.Utils.NoteUtil;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.NoteUtil;
+import com.atulgpt.www.timetrix.utils.GlobalData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +42,7 @@ public class CustomAdapterTags extends BaseExpandableListAdapter {
         final TextView title;
         Button popupMenuDots;
 
-        public ViewHolderNotes(View view) {
+        ViewHolderNotes(View view) {
             notes = (TextView) view.findViewById (R.id.testViewNotes);
             date = (TextView) view.findViewById (R.id.testViewNotesDate);
             title = (TextView) view.findViewById (R.id.testViewNotesTitle);
@@ -138,7 +138,7 @@ public class CustomAdapterTags extends BaseExpandableListAdapter {
             e.printStackTrace ();
         }
         viewHolderNotes.notes.setText (noteText);
-        viewHolderNotes.date.setText (" " + noteDateStamp);
+        viewHolderNotes.date.setText (noteDateStamp);
         viewHolderNotes.title.setText (titleText);
         viewHolderNotes.popupMenuDots.setVisibility (View.INVISIBLE);
 //            Toast.makeText(mContext, "mParam in adapt ="+mParam, Toast.LENGTH_SHORT).show();

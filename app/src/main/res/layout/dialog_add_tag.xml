@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="30dp"
-    android:paddingEnd="20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingStart="20dp"
+    android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp"
     android:paddingTop="30dp">
 
     <com.doodle.android.chips.ChipsView
@@ -28,7 +28,7 @@
 
         <android.support.v7.widget.AppCompatAutoCompleteTextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:id="@+id/tag_editText"
             android:hint="@string/apply_tag_str"
             android:minWidth="150dp"
@@ -39,11 +39,12 @@
     <Spinner
         android:id="@+id/color_spinner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_toEndOf="@+id/textInputLayoutTag"
         android:layout_toRightOf="@+id/textInputLayoutTag"
+        android:layout_marginTop="8dp"
         android:entries="@array/tags_color"
         android:prompt="@string/select_a_choice"
         android:spinnerMode="dropdown" />

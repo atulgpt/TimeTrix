@@ -1,9 +1,9 @@
-package com.atulgpt.www.timetrix.Utils;
+package com.atulgpt.www.timetrix.utils;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

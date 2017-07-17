@@ -1,4 +1,4 @@
-package com.atulgpt.www.timetrix.Adapters;
+package com.atulgpt.www.timetrix.adapters;
 /**
  * Created by atulgupta on 13-06-2015 at 12:59 PM for TimeTrix at 01:18 PM for TimeTrix .
  * Manages database(SQLite) interaction
@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.atulgpt.www.timetrix.Utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.GlobalData;
 
 import org.json.JSONException;
 import org.json.JSONObject;

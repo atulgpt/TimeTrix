@@ -2,8 +2,8 @@ package com.atulgpt.www.timetrix.dataBinders;
 
 import android.content.Context;
 
-import com.atulgpt.www.timetrix.Adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.Utils.GlobalData;
+import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.utils.GlobalData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
