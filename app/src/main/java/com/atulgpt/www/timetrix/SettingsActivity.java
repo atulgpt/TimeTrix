@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +29,10 @@ import com.atulgpt.www.timetrix.utils.SharedPrefsUtil;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
+    private static final String TAG = SettingsActivity.class.getSimpleName ();
     private SwitchCompat mPasswordSwitch;
     //private CallbackManager mCallbackManager;
+    private int mSectionIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled (true);
         }
-
+        if (getIntent ().hasExtra (GlobalData.SECTION_INDEX)) {
+            mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX, 0);
+        }
 //        LoginButton loginButton = (LoginButton) findViewById (R.id.login_button_1);
 //        loginButton.setReadPermissions ("email");
 //
@@ -87,6 +92,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         return super.onCreateOptionsMenu (menu);
     }
 
+    /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        startActivity (new Intent (SettingsActivity.this, StartupPage.class).putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
+        SettingsActivity.this.finish ();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -95,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         int id = item.getItemId ();
 
         if (id == android.R.id.home) {
-            startActivity (new Intent (SettingsActivity.this, StartupPage.class));
+            startActivity (new Intent (SettingsActivity.this, StartupPage.class).putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
             SettingsActivity.this.finish ();
             return true;
         }
@@ -112,10 +127,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             builder.setPositiveButton (getString (R.string.yes_str), new DialogInterface.OnClickListener () {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    DatabaseAdapter databaseAdapter = new DatabaseAdapter (SettingsActivity.this);
+                    DatabaseAdapter databaseAdapter = new DatabaseAdapter (SettingsActivity.this, null);
                     databaseAdapter.deleteDatabase ();
-                    Toast.makeText (SettingsActivity.this, "Table Deleted!", Toast.LENGTH_SHORT).show ();
-                    startActivity (new Intent (SettingsActivity.this, AddAnotherSection.class).putExtra (GlobalData.ADD_ANOTHER_SUB_HOME, false));
+                    Toast.makeText (SettingsActivity.this, "Complete data Deleted!", Toast.LENGTH_SHORT).show ();
+                    startActivity (new Intent (SettingsActivity.this, AddAnotherSection.class).putExtra (GlobalData.ADD_ANOTHER_SEC_HOME, false));
                     SettingsActivity.this.finish ();
                     dialog.dismiss ();
                 }
@@ -158,26 +173,32 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     public void onClick(View v) {
                         EditText passwordEditText = (EditText) dialog.findViewById (R.id.editText_password);
                         EditText confirmPasswordEditText = (EditText) dialog.findViewById (R.id.editText_confirm_password);
-                        String password = passwordEditText.getText ().toString ();
-                        String confirmPassword = confirmPasswordEditText.getText ().toString ();
-                        if (password.trim ().isEmpty () || confirmPassword.trim ().isEmpty ()) {
+                        if (passwordEditText != null && confirmPasswordEditText != null) {
+                            String password = passwordEditText.getText ().toString ();
+                            String confirmPassword = confirmPasswordEditText.getText ().toString ();
                             View view = null;
                             if (password.trim ().isEmpty ()) {
                                 view = passwordEditText;
                             } else if (confirmPassword.trim ().isEmpty ()) {
                                 view = confirmPasswordEditText;
                             }
-                            ((EditText) view).setError ("Empty field is not allowed");
-                            view.requestFocus ();
-                        } else {
-                            if (password.equals (confirmPassword)) {
-                                sharedPrefsUtil.setUserPassAuth (confirmPassword);
-                                sharedPrefsUtil.enablePassword ();
-                                dialog.dismiss ();
+                            if (view != null) {
+                                ((EditText) view).setError (getString (R.string.empty_field_not_allowed_str));
+                                view.requestFocus ();
                             } else {
-                                confirmPasswordEditText.setError ("Password did not match!");
-                                confirmPasswordEditText.requestFocus ();
+                                if (password.equals (confirmPassword)) {
+                                    sharedPrefsUtil.setUserPassAuth (confirmPassword);
+                                    sharedPrefsUtil.enablePassword ();
+                                    dialog.dismiss ();
+                                } else {
+                                    confirmPasswordEditText.setError (getString (R.string.password_didnt_match_str));
+                                    confirmPasswordEditText.requestFocus ();
+                                }
                             }
+                        } else {
+                            startActivity (new Intent (SettingsActivity.this, StartupPage.class).putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
+                            SettingsActivity.this.finish ();
+                            Log.d (TAG, "onClick: error in password dialog, fields are null");
                         }
                     }
                 });
@@ -193,11 +214,5 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 sharedPrefsUtil.disableSyncInCloud ();
             }
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult (requestCode, resultCode, data);
-        //mCallbackManager.onActivityResult (requestCode, resultCode, data);
     }
 }

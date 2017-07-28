@@ -76,6 +76,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
     }
+
     /*
     private class SearchFilter extends Filter {
         private RecyclerViewAdapter mRecycleViewAdapter;
@@ -198,22 +199,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         long noteTimeInMillis;
         try {
             jsonObject = new JSONObject (mArrayList.get (position));
-//            Toast.makeText (mContext, "value check= " + mArrayList.get (position), Toast.LENGTH_SHORT).show ();
-        } catch (JSONException e) {
-            e.printStackTrace ();
-        }
-        try {
             noteText = jsonObject.getString (GlobalData.NOTE_BODY);
-        } catch (JSONException e) {
-            e.printStackTrace ();
-        }
-        try {
             noteTimeInMillis = jsonObject.getLong (GlobalData.NOTE_TIME_MILLIS);
-            noteDateStamp = (String) DateUtils.getRelativeTimeSpanString (noteTimeInMillis, System.currentTimeMillis (), 3, DateUtils.FORMAT_ABBREV_RELATIVE);
-        } catch (JSONException e) {
-            e.printStackTrace ();
-        }
-        try {
+            noteDateStamp = (String) DateUtils.getRelativeTimeSpanString (noteTimeInMillis,
+                    System.currentTimeMillis (), 3, DateUtils.FORMAT_ABBREV_RELATIVE);
             titleText = jsonObject.getString (GlobalData.NOTE_TITLE);
         } catch (JSONException e) {
             e.printStackTrace ();
@@ -221,12 +210,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.notes.setText (noteText);
         holder.date.setText (noteDateStamp);
         holder.title.setText (titleText);
-//            Toast.makeText(mContext, "mParam in adapt ="+mParam, Toast.LENGTH_SHORT).show();
-
         holder.popupMenuDots.setTag (position);
         holder.popupMenuDots.setOnClickListener (this);
-
-
     }
 
     /**

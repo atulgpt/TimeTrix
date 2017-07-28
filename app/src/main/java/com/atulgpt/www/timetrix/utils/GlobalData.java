@@ -5,12 +5,12 @@ package com.atulgpt.www.timetrix.utils;
  * Contains various constants and strings
  */
 public class GlobalData {
-    public static final String PREF_SETTINGS = "sharedPreferences";
-    public static final String IS_NOTIFICATION_ENABLED = "isNotificationIsEnabledOrNot";
-    public static final String IS_PASSWORD_ENABLED = "isPasswordEnabledOrNot";
-    public static final String USER_NAME_AUTH = "userNameForAuthentication";
-    public static final String USER_PASS_AUTH = "userPasswordForAuthentication";
-    public static final String IS_SYNC_ENABLE = "isSyncInCloud";
+    static final String PREF_SETTINGS = "sharedPreferences";
+    static final String IS_NOTIFICATION_ENABLED = "isNotificationIsEnabledOrNot";
+    static final String IS_PASSWORD_ENABLED = "isPasswordEnabledOrNot";
+    static final String USER_NAME_AUTH = "userNameForAuthentication";
+    static final String USER_PASS_AUTH = "userPasswordForAuthentication";
+    static final String IS_SYNC_ENABLE = "isSyncInCloud";
 
     public static final String NOTE_BODY = "note";
     public static final String NOTE_DATE_STAMP = "noteDate";
@@ -18,19 +18,25 @@ public class GlobalData {
     public static final String NOTE_IS_STAR = "noteStar";
     public static final String NOTE_TIME_MILLIS = "noteTimeInMillis";
     public static final String NOTE_INDEX = "noteIndex";
-    public static final String NOTE_TAG_ARRAY = "noteTagArray";
-    public static final String NOTE_TAG_NAME = "noteTagName" ;
-    public static final String NOTE_TAG_COLOR = "noteTagColor";
+    static final String NOTE_TAG_ARRAY = "noteTagArray";
+    static final String NOTE_TAG_NAME = "noteTagName" ;
+    static final String NOTE_TAG_COLOR = "noteTagColor";
 
     public static final int POPULATE_LIST_VIEW = 25;
 
     //public static final String USER_NAME = "atul";
     public static final String APP_DEV_EMAIL = "atlgpt17@gmail.com";
 
-    public static final String ADD_ANOTHER_SUB_HOME = "addAnotherSubHomeDisplay";
-    public static final String SUBJECT_NAME = "subName";
-    public static final String PROF_NAME = "profName" ;
-    public static final String FILE_ID = "fileID" ;
+    public static final String ADD_ANOTHER_SEC_HOME = "addAnotherSecHomeDisplay";
+    public static final String SECTION_NAME = "subName";
+    public static final String SECTION_DESCRIPTION = "profName" ;
+    public static final String SECTION_INDEX = "sectionIndex" ;
     public static final String RESUME_STATE_FILE_ID = "resumeStateFileID";
+
+    public static final String  STATUS = "status";
+    public static final String STATUS_OK = "ok";
+    public static final String DATA = "data";
+
+    public static final int REQUEST_FOR_SECTION_UPDATE = 0;
 }
 

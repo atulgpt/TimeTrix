@@ -24,18 +24,18 @@ public class NoteUtil {
         mContext = context;
     }
 
-    private Boolean setNote(long subjectID, String notes) {
-        if (subjectID < 0)
+    private Boolean setNote(int sectionID, String notes) {
+        if (sectionID < 0)
             return false;
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (mContext);
-        return databaseAdapter.setNote (subjectID, notes);
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (mContext, null);
+        return databaseAdapter.setNote (sectionID, notes);
     }
 
-    public JSONArray getNoteJSONArray(long subjectID) {
-        if (subjectID < 0)
+    public JSONArray getNoteJSONArray(int sectionID) {
+        if (sectionID < 0)
             return null;
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (mContext);
-        String allNote = databaseAdapter.getNote (subjectID);
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (mContext, null);
+        String allNote = databaseAdapter.getNotesForSection (sectionID);
         try {
             if (allNote != null)
                 return new JSONArray (allNote);
@@ -45,12 +45,12 @@ public class NoteUtil {
         return new JSONArray ();
     }
 
-    public JSONObject deleteNote(long notePosition, long subjectID) {
-        if (notePosition < 0 || subjectID < 0) {
+    public JSONObject deleteNote(long notePosition, int sectionID) {
+        if (notePosition < 0 || sectionID < 0) {
             return null;
         }
         JSONObject deletedNote = null;
-        JSONArray jsonArray = getNoteJSONArray (subjectID);
+        JSONArray jsonArray = getNoteJSONArray (sectionID);
         JSONArray jsonArrayNew = new JSONArray ();
         int len, offset = 0;
         len = jsonArray.length ();
@@ -73,14 +73,14 @@ public class NoteUtil {
                 }
             }
         }
-        setNote (subjectID, jsonArrayNew.toString ());
+        setNote (sectionID, jsonArrayNew.toString ());
         return deletedNote;
     }
 
-    public Boolean addNoteAtAPosition(long notePosition, JSONObject note, long subjectID) {
-        if (notePosition < 0 || subjectID < 0)
+    public Boolean addNoteAtAPosition(long notePosition, JSONObject note, int sectionID) {
+        if (notePosition < 0 || sectionID < 0)
             return false;
-        JSONArray jsonArray = getNoteJSONArray (subjectID);
+        JSONArray jsonArray = getNoteJSONArray (sectionID);
         JSONArray jsonArrayNew = new JSONArray ();
         int len, offset = 0;
         len = jsonArray.length ();
@@ -103,18 +103,18 @@ public class NoteUtil {
                 offset = -1;
             }
         }
-        return setNote (subjectID, jsonArrayNew.toString ());
+        return setNote (sectionID, jsonArrayNew.toString ());
     }
 
-    public Boolean editNote(long notePosition, long subjectID, String note, String title) {
-        if (notePosition < 0 || subjectID < 0)
+    public Boolean editNote(long notePosition, int sectionID, String note, String title) {
+        if (notePosition < 0 || sectionID < 0)
             return false;
         if (note.trim ().isEmpty () && title.trim ().isEmpty ()) {
             return true;
         }
         JSONObject jsonObject;
         JSONArray jsonArray;
-        jsonArray = getNoteJSONArray (subjectID);
+        jsonArray = getNoteJSONArray (sectionID);
         try {
             jsonObject = jsonArray.getJSONObject ((int) notePosition);
             jsonObject.put (GlobalData.NOTE_TITLE, title);
@@ -124,13 +124,13 @@ public class NoteUtil {
             e.printStackTrace ();
             return false;
         }
-        return setNote (subjectID, jsonArray.toString ());
+        return setNote (sectionID, jsonArray.toString ());
     }
 
-    public Boolean addOrRemoveStar(long notePosition, long subjectID) {
-        if (notePosition < 0 || subjectID < 0)
+    public Boolean addOrRemoveStar(long notePosition, int sectionID) {
+        if (notePosition < 0 || sectionID < 0)
             return false;
-        JSONArray jsonArray = getNoteJSONArray (subjectID);
+        JSONArray jsonArray = getNoteJSONArray (sectionID);
         JSONObject jsonObject = null;
         //Toast.makeText(mContext, "" + jsonArray.toString(), Toast.LENGTH_LONG).show();
         try {
@@ -148,13 +148,13 @@ public class NoteUtil {
             e.printStackTrace ();
         }
 //        Toast.makeText(mContext, "" + jsonArray.toString(), Toast.LENGTH_LONG).show();
-        return setNote (subjectID, jsonArray.toString ());
+        return setNote (sectionID, jsonArray.toString ());
     }
 
-    public Boolean getStarStatus(long notePosition, long subjectID) {
-        if (notePosition < 0 || subjectID < 0)
+    public Boolean getStarStatus(long notePosition, int sectionID) {
+        if (notePosition < 0 || sectionID < 0)
             return false;
-        JSONArray jsonArray = getNoteJSONArray (subjectID);
+        JSONArray jsonArray = getNoteJSONArray (sectionID);
         JSONObject jsonObject = null;
         try {
             jsonObject = jsonArray.getJSONObject ((int) notePosition);
@@ -171,8 +171,8 @@ public class NoteUtil {
         return false;
     }
 
-    public Boolean addTag(long notePosition, long subjectID, String tag, String color) {
-        if (notePosition < 0 || subjectID < 0)
+    public Boolean addTag(long notePosition, int sectionID, String tag, String color) {
+        if (notePosition < 0 || sectionID < 0)
             return false;
         JSONArray jsonArrayTag = new JSONArray ();
         JSONObject jsonObjectTag = new JSONObject ();
@@ -183,7 +183,7 @@ public class NoteUtil {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
-        JSONArray jsonArray = getNoteJSONArray (subjectID);
+        JSONArray jsonArray = getNoteJSONArray (sectionID);
         if (jsonArray == null) {
             return false;
         }
@@ -218,12 +218,12 @@ public class NoteUtil {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
-        return setNote (subjectID, jsonArray.toString ());
+        return setNote (sectionID, jsonArray.toString ());
     }
 
-    private JSONArray getTotalTags(long subjectID) { // FIXME: 07-05-2016 jsonArray should return unique tags and avoid repetition
+    private JSONArray getTotalTags(int sectionID) { // FIXME: 07-05-2016 jsonArray should return unique tags and avoid repetition
         JSONArray jsonArray;
-        jsonArray = getNoteJSONArray (subjectID);
+        jsonArray = getNoteJSONArray (sectionID);
         JSONObject jsonObject = null;
         int noOfNotes = jsonArray.length ();
         JSONArray jsonArrayTags = new JSONArray ();
@@ -237,7 +237,9 @@ public class NoteUtil {
 
             if (jsonObject != null) {
                 try {
-                    jsonArrayTags.put (jsonObject.getJSONArray (GlobalData.NOTE_TAG_ARRAY));
+                    if (jsonObject.has (GlobalData.NOTE_TAG_ARRAY)) {
+                        jsonArrayTags.put (jsonObject.getJSONArray (GlobalData.NOTE_TAG_ARRAY));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace ();
                     if (DEBUG) Log.d (TAG, "2. getTotalTags " + e + jsonObject);
@@ -249,9 +251,9 @@ public class NoteUtil {
         return jsonArrayTags;
     }
 
-    public ArrayList<String> getTotalTagsString(long subjectID) {
+    public ArrayList<String> getTotalTagsString(int sectionID) {
         ArrayList<String> tagStringList = new ArrayList<> (5);
-        JSONArray jsonArray = getTotalTags (subjectID);
+        JSONArray jsonArray = getTotalTags (sectionID);
         for (int i = 0; i < jsonArray.length (); i++) {
             JSONArray jsonObjectArray = null;
             try {
@@ -278,12 +280,12 @@ public class NoteUtil {
         return tagStringList;
     }
 
-    public int getSubjectTagsCount(long subjectID) {
-        return getTotalTagsString (subjectID).size ();
+    public int getSubjectTagsCount(int sectionID) {
+        return getTotalTagsString (sectionID).size ();
     }
 
-    public JSONArray getNotesForATag(long subjectID, String tag){
-        JSONArray jsonArray = getNoteJSONArray (subjectID);
+    public JSONArray getNotesForATag(int sectionID, String tag) {
+        JSONArray jsonArray = getNoteJSONArray (sectionID);
         JSONArray outJSONArrayNotes = new JSONArray ();
 
         for (int i = 0; i < jsonArray.length (); i++) {
@@ -292,17 +294,19 @@ public class NoteUtil {
                 jsonObjectNote = jsonArray.getJSONObject (i);
             } catch (JSONException e) {
                 e.printStackTrace ();
-                if(DEBUG) Log.d (TAG, "getNotesForATag "+e);
+                if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
             }
 
             JSONArray jsonArrayTagArray = null;
             try {
                 if (jsonObjectNote != null) {
-                    jsonArrayTagArray = jsonObjectNote.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
+                    if (jsonObjectNote.has (GlobalData.NOTE_TAG_ARRAY)) {
+                        jsonArrayTagArray = jsonObjectNote.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace ();
-                if(DEBUG) Log.d (TAG, "getNotesForATag "+e);
+                if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
             }
             if (jsonArrayTagArray != null) {
 
@@ -313,25 +317,26 @@ public class NoteUtil {
                         jsonObjectTag = jsonArrayTagArray.getJSONObject (j);
                     } catch (JSONException e) {
                         e.printStackTrace ();
-                        if(DEBUG) Log.d (TAG, "getNotesForATag "+e);
+                        if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
                     }
                     try {
                         if (jsonObjectTag != null) {
-                            if(jsonObjectTag.getString (GlobalData.NOTE_TAG_NAME).equals (tag)){
+                            if (jsonObjectTag.getString (GlobalData.NOTE_TAG_NAME).equals (tag)) {
                                 outJSONArrayNotes.put (jsonObjectNote);
                                 break;
                             }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace ();
-                        if(DEBUG) Log.d (TAG, "getNotesForATag "+e);
+                        if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
                     }
                 }
             }
         }
         return outJSONArrayNotes;
     }
-    public int getNotesForATagCount(long subjectID, String tag){
-        return getNotesForATag (subjectID,tag).length ();
+
+    public int getNotesForATagCount(int sectionID, String tag) {
+        return getNotesForATag (sectionID, tag).length ();
     }
 }

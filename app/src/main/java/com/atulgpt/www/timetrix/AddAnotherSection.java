@@ -24,8 +24,8 @@ public class AddAnotherSection extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAddSub);
         setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-//        Toast.makeText (AddAnotherSection.this, "bool in addAnother"+getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SUB_HOME,true), Toast.LENGTH_SHORT).show ();
-        if (actionBar != null && getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SUB_HOME,true) ) {
+//        Toast.makeText (AddAnotherSection.this, "bool in addAnother"+getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SEC_HOME,true), Toast.LENGTH_SHORT).show ();
+        if (actionBar != null && getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SEC_HOME,true) ) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -34,12 +34,12 @@ public class AddAnotherSection extends AppCompatActivity {
         final EditText editTextDescription = (EditText) findViewById(R.id.editTextDescription);
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DatabaseAdapter databaseAdapter = new DatabaseAdapter(AddAnotherSection.this);
+                DatabaseAdapter databaseAdapter = new DatabaseAdapter(AddAnotherSection.this,null);
                 if (editTextSectionName.getText().toString().isEmpty()) {
                     Toast.makeText(AddAnotherSection.this, R.string.empty_sub_name_not_to_str, Toast.LENGTH_LONG).show();
                     return;
                 }
-                databaseAdapter.addTable (editTextSectionName.getText ().toString (), editTextDescription.getText ().toString ());
+                databaseAdapter.addSection (editTextSectionName.getText ().toString (), editTextDescription.getText ().toString ());
                 Intent intent = new Intent(AddAnotherSection.this, StartupPage.class);
                 startActivity(intent);
                 AddAnotherSection.this.finish ();
@@ -80,7 +80,7 @@ public class AddAnotherSection extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(!getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SUB_HOME,true)){
+        if(!getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SEC_HOME,true)){
             AddAnotherSection.this.finish ();
         }else {
             Intent intent = new Intent(AddAnotherSection.this, StartupPage.class);

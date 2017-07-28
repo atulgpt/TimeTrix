@@ -1,7 +1,6 @@
 package com.atulgpt.www.timetrix.fragments;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -9,8 +8,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,13 +19,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
+import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.adapters.CustomAdapter;
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.adapters.RecyclerViewAdapter;
-import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.utils.GlobalData;
 import com.atulgpt.www.timetrix.utils.NoteUtil;
 
@@ -49,10 +46,10 @@ import java.util.Locale;
  * create an instance of this fragment.
  */
 public class FragmentAllNotes extends android.support.v4.app.Fragment implements View.OnClickListener, DialogInterface.OnClickListener,
-        CustomAdapter.OnListAdapterInteractionListener, RecyclerViewAdapter.OnListAdapterInteractionListener {
+        CustomAdapter.OnListAdapterInteractionListener, RecyclerViewAdapter.OnListAdapterInteractionListener, DatabaseAdapter.DatabaseAdapterListener {
     private static final String TAG = FragmentAllNotes.class.getSimpleName ();
     private static final boolean DEBUG = true;
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_NOTE_INDEX = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private static final int DIALOG_BUTTON_CLICKED = 1;
@@ -60,15 +57,12 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
 
     // TODOo: Rename and change types of parameters
     private String mNoteIndex;
-    private String mTabPosition;
     private int mDialogStatus;
     private OnFragmentInteractionListener mOnFragmentInteractionListener;
     //private static CustomAdapter.OnListAdapterInteractionListener mOnListAdapterInteractionListener;
 
     private RecyclerViewAdapter mCustomRecyclerViewAdapterAllNotes;
     private ArrayList<String> mArrayListAllNotes;
-    private Handler mHandlerAll = null;
-    private ListView mListViewAll;
     private RecyclerView mRecyclerViewAllNotes;
 
     public static final String tempString = "subject_fragment_all";
@@ -81,17 +75,16 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
      * @param param2 Parameter 2.
      * @return A new instance of fragment SubjectTabFragment.
      */
-    // TODOo: Rename and change types and number of parameters
     public static FragmentAllNotes newInstance(String param1, String param2) {
         FragmentAllNotes fragment = new FragmentAllNotes ();
         Bundle args = new Bundle ();
-        args.putString (ARG_PARAM1, param1);
+        args.putString (ARG_NOTE_INDEX, param1);
         args.putString (ARG_PARAM2, param2);
         fragment.setArguments (args);
         return fragment;
     }
 
-    public void setArgParam1(String param1) {
+    public void setNoteIndex(String param1) {
         this.mNoteIndex = param1;
     }
 
@@ -109,8 +102,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         if (getArguments () != null) {
-            mNoteIndex = getArguments ().getString (ARG_PARAM1);
-            mTabPosition = getArguments ().getString (ARG_PARAM2);
+            mNoteIndex = getArguments ().getString (ARG_NOTE_INDEX);
         }
 
     }
@@ -146,7 +138,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach (activity);
         //Toast.makeText(getActivity(), "onAttach in fragmentAll", Toast.LENGTH_SHORT).show();
         try {
@@ -155,33 +147,31 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             throw new ClassCastException (activity.toString ()
                     + " must implement OnFragmentInteractionListener");
         }
-//        ((StartupPage)activity).onSectionAttached (Integer.parseInt (mNoteIndex));
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach (context);
-        //Toast.makeText(getActivity(), "onAttach in fragmentAll", Toast.LENGTH_SHORT).show();
+//        ((StartupPage)activity).updateTitleOnSectionAttached (Integer.parseInt (mNoteIndex));
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
-        FloatingActionButton btnAddNotes = (FloatingActionButton) getActivity ().findViewById (R.id.buttonAddNotes);
+    }
+
+    /**
+     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     * has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once
+     * they know their view hierarchy has been completely created.  The fragment's
+     * view hierarchy is not however attached to its parent at this point.
+     *
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     */
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated (view, savedInstanceState);
+        FloatingActionButton btnAddNotes = (FloatingActionButton) view.findViewById (R.id.buttonAddNotes);
         btnAddNotes.setOnClickListener (this);
 //        mListViewAll = (ListView) getActivity ().findViewById (R.id.listNotesAll);
-        mRecyclerViewAllNotes = (RecyclerView) getActivity ().findViewById (R.id.recyclerNotesAll);
-
-        mHandlerAll = new Handler () {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case GlobalData.POPULATE_LIST_VIEW:// if receive massage
-                        //populateListView();
-                        listDataSetChanged ();
-                }
-            }
-        };
-
+        mRecyclerViewAllNotes = (RecyclerView) view.findViewById (R.id.recyclerNotesAll);
         mArrayListAllNotes = new ArrayList<> ();
 
 //        mCustomAdapterAllNotes = new CustomAdapter (mArrayListAllNotes, getActivity (), tempString, mHandlerAll);
@@ -194,30 +184,6 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         llm.setOrientation (LinearLayoutManager.VERTICAL);
         mRecyclerViewAllNotes.setLayoutManager (llm);
         populateListView ();
-//        mCustomAdapterAllNotes.setOnListAdapterInteractionListener (this);
-//        mListViewAll.setTag (R.string.filename, mNoteIndex);
-//        mListViewAll.setTag (R.string.list_object, mArrayListAllNotes);
-//        mListViewAll.setAdapter (mCustomAdapterAllNotes);
-//        mListViewAll.setItemsCanFocus (true);
-//        populateListView ();
-
-//        testEditext.addTextChangedListener (new TextWatcher () {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-////                mCustomRecyclerViewAdapterAllNotes.getFilter().filter(charSequence.toString());
-//                Toast.makeText (getActivity (), "change: "+charSequence+"ch", Toast.LENGTH_SHORT).show ();
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -236,8 +202,6 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder (getActivity ());
                 builder.setTitle (R.string.add_notes_str);
                 builder.setCancelable (true);
-                LayoutInflater inflater = getActivity ().getLayoutInflater ();
-                View dialogView = inflater.inflate (R.layout.dialog_add_notes, null);
                 // for transition
 //                String transitionName = getString (R.string.transition_string);
 //                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation (getActivity (),dialogView,transitionName);
@@ -245,7 +209,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
 //                DialogAddNewNote dialogAddNewNote = DialogAddNewNote.newInstance(5);
 //                ChangeBounds changeBoundsTransition = TransitionInflater.from(getActivity ()).inflateTransition(R.transition.change_bounds);
 //                dialogAddNewNote.setSharedElementEnterTransition (changeBoundsTransition);
-                builder.setView (dialogView);
+                builder.setView (R.layout.dialog_add_notes);
                 builder.setNegativeButton (R.string.cancel_str, new DialogInterface.OnClickListener () {
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -275,8 +239,8 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         if (note.trim ().isEmpty ())
             return;
         JSONObject jsonObject = new JSONObject ();
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        String allNote = databaseAdapter.getNote (Long.parseLong (mNoteIndex) + 1);
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mNoteIndex) + 1);
         JSONArray js = new JSONArray ();
         if (DEBUG)
             Log.d (TAG, "onClick allNote = " + allNote + " SubjectId -1 = " + mNoteIndex + " empty json = " + js + " empty 2nd =" + js.toString ());
@@ -311,7 +275,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             if (DEBUG) Log.d (TAG, "onClick 1." + getString (R.string.file_could_not_update_str));
         }
         Boolean bool;
-        bool = databaseAdapter.setNote (Long.valueOf (mNoteIndex) + 1, jsonArray.toString ());
+        bool = databaseAdapter.setNote (Integer.parseInt (mNoteIndex) + 1, jsonArray.toString ());
         if (DEBUG) Log.d (TAG, "onClick checking JSONArray" + jsonArray.toString ());
         if (bool) {
             populateListView ();
@@ -336,7 +300,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
                     NoteUtil noteUtil = new NoteUtil (getActivity ());
                     try {
                         JSONObject jsonObjectNote = new JSONObject (data3);
-                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Long.valueOf (mNoteIndex) + 1);
+                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mNoteIndex) + 1);
                         if (DEBUG)
                             Toast.makeText (getActivity (), "Note Added " + bool, Toast.LENGTH_SHORT).show ();
                         populateListView ();
@@ -361,6 +325,11 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
 
     }
 
+    @Override
+    public void populateListViewData(String data, String query) {
+
+    }
+
 
     public interface OnFragmentInteractionListener {
         // TODOo: Update argument type and name
@@ -375,8 +344,8 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
      * @param query search string from the parent activity to display in the recyclerView
      */
     public void populateListView(String query) {
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        String allNote = databaseAdapter.getNote (Long.parseLong (mNoteIndex) + 1);
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mNoteIndex) + 1);
         JSONArray jsonArray = new JSONArray ();
         try {
             if (allNote != null)

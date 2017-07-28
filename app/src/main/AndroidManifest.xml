@@ -39,7 +39,10 @@
         </activity>
         <activity
             android:name=".AddAnotherSection"
-            android:label="@string/title_activity_add_another_subject">
+            android:label="@string/title_activity_add_another_section">
+        </activity>
+        <activity android:name=".SectionDetailsActivity"
+                  android:label="@string/details_str">
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -51,8 +54,6 @@
             android:label="@string/title_activity_settings">
         </activity>
         <activity android:name=".SearchActivity">
-        </activity>
-        <activity android:name=".NoteDetailsActivity">
         </activity>
     </application>
 

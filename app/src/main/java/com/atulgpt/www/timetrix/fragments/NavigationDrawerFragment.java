@@ -1,7 +1,7 @@
 package com.atulgpt.www.timetrix.fragments;
 
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -20,9 +20,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.adapters.CustomAdapter;
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.R;
 
 import java.util.ArrayList;
 
@@ -82,12 +82,14 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt (STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
-            if (DEBUG) Log.d (TAG, "onCreate: inside saveinstance not null, mCurr "+mCurrentSelectedPosition);
+            if (DEBUG)
+                Log.d (TAG, "onCreate: inside saveInstance not null, mCurr " + mCurrentSelectedPosition);
         }
 
         // Select either the default item (0) or the last selected item.
-        if(DEBUG) Log.d (TAG, "onCreate: currentPos = "+mCurrentSelectedPosition +" savedinstance: "+savedInstanceState);
-//        selectItem (mCurrentSelectedPosition);
+        if (DEBUG)
+            Log.d (TAG, "onCreate: currentPos = " + mCurrentSelectedPosition + " savedInstance: " + savedInstanceState);
+//        selectItemWithCallback (mCurrentSelectedPosition);
     }
 
 
@@ -96,22 +98,21 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate (
                 R.layout.fragment_navigation_drawer, container, false);
+        arrayList = new ArrayList<> ();
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), null);
+        arrayList = databaseAdapter.getAllSectionNames ();
+        arrayList.add (getString (R.string.add_section_str));
+        customAdapter = new CustomAdapter (arrayList, getActivity (), "navigation_drawer", null);
+        mDrawerListView.setAdapter (customAdapter);
+        View headerView = View.inflate (getActivity (), R.layout.header_navigation, null);
+        mDrawerListView.addHeaderView (headerView);
         mDrawerListView.setOnItemClickListener (new AdapterView.OnItemClickListener () {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(DEBUG) Log.d (TAG, "onCreateView: currentPos = "+position);
-                selectItem (position);
+                if (DEBUG) Log.d (TAG, "onCreateView: currentPos = " + position);
+                selectItemWithCallback (position);
             }
         });
-
-        arrayList = new ArrayList<> ();
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        arrayList = databaseAdapter.getAllData ();
-        arrayList.add (getString (R.string.add_subject_str));
-        customAdapter = new CustomAdapter (arrayList, getActivity (), "navigation_drawer", null);
-        mDrawerListView.setAdapter (customAdapter);
-        View headerView = inflater.inflate (R.layout.header_navigation, null);
-        mDrawerListView.addHeaderView (headerView);
         mDrawerListView.setItemChecked (mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -125,8 +126,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         super.onActivityCreated (savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu (true);
-        if (DEBUG) Log.d (TAG, "onActivityCreated: currentPos = "+mCurrentSelectedPosition);
-        selectItem (mCurrentSelectedPosition);
+        if (DEBUG) Log.d (TAG, "onActivityCreated: currentPos = " + mCurrentSelectedPosition);
+        selectItemWithCallback (mCurrentSelectedPosition);
 //        Toast.makeText(getActivity(), "position = " + mCurrentSelectedPosition + " d list = " + mDrawerListView, Toast.LENGTH_LONG).show();
         //Toast.makeText(getActivity(), "position in onActivityCreated = "+mCurrentSelectedPosition, Toast.LENGTH_SHORT).show();
     }
@@ -180,6 +181,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened (drawerView);
                 if (!isAdded ()) {
+                    selectItemWithCallback (mCurrentSelectedPosition);
                     return;
                 }
 
@@ -210,13 +212,14 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        mDrawerLayout.setDrawerListener (mSupportDrawerToggle);
+        mDrawerLayout.addDrawerListener (mSupportDrawerToggle);
     }
 
-    private void selectItem(int position) {
+    public void selectItemWithCallback(int position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked (position, true);
+            customAdapter.notifyDataSetChanged ();
         }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer (mFragmentContainerView);
@@ -226,8 +229,15 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         }
     }
 
+    public void selectItemPosAndHighlight(int position) {
+        if (mDrawerListView != null) {
+            mDrawerListView.setItemChecked (position, true);
+            customAdapter.notifyDataSetChanged ();
+        }
+    }
+
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach (activity);
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
@@ -246,7 +256,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState (outState);
         outState.putInt (STATE_SELECTED_POSITION, mCurrentSelectedPosition);
-        if (DEBUG) Log.d (TAG, "onSaveInstanceState: "+mCurrentSelectedPosition);
+        if (DEBUG) Log.d (TAG, "onSaveInstanceState: " + mCurrentSelectedPosition);
     }
 
     @Override
@@ -293,25 +303,22 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     }
 
     public void populateListView() {
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-//        arrayList.clear ();
-//        ArrayList<String> temp = arrayList;
-//        ArrayList<String> temp1  = new ArrayList<> ();
-//        temp1.add ("uh");
-//        temp1.clear ();
-//        temp1 = arrayList;
-//        Toast.makeText (getActivity (), "1. gg "+(temp == arrayList)+" 2. "+(arrayList == temp1), Toast.LENGTH_LONG).show ();
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), null);
         ArrayList<String> arrayListTemp;
-        arrayListTemp = databaseAdapter.getAllData ();
+        arrayListTemp = databaseAdapter.getAllSectionNames ();
         arrayList.clear ();
         for (int i = 0; i < arrayListTemp.size (); i++) {
             arrayList.add (arrayListTemp.get (i));
         }
-        arrayList.add (getString (R.string.add_subject_str));
-//        Toast.makeText (getActivity (), "1. gg "+(temp == arrayList)+" 2. ", Toast.LENGTH_LONG).show ();
-//        Toast.makeText (getActivity (), "check: "+arrayList.toString ()+" " + arrayList, Toast.LENGTH_LONG).show ();
+        arrayList.add (getString (R.string.add_section_str));
         mDrawerListView.setAdapter (customAdapter);
-        customAdapter.notifyDataSetChanged ();
+        // NotifyDataSetChanged is called in below function
+        NavigationDrawerFragment.this.selectItemPosAndHighlight (mCurrentSelectedPosition);
+    }
+
+    public long getSectionNo() {
+        return mDrawerListView.getAdapter ().getCount () - 2; // One is subtracted because we have
+        // to exclude last item and other for header view
     }
 
     /**

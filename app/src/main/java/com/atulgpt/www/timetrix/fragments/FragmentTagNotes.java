@@ -1,12 +1,10 @@
 package com.atulgpt.www.timetrix.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +13,9 @@ import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.atulgpt.www.timetrix.adapters.CustomAdapter;
+import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.adapters.CustomAdapterTags;
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
-import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.utils.GlobalData;
 
 import org.json.JSONArray;
@@ -38,7 +35,7 @@ import java.util.Locale;
  * Use the {@link FragmentAllNotes#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTagNotes extends android.support.v4.app.Fragment implements View.OnClickListener, DialogInterface.OnClickListener {
+public class FragmentTagNotes extends android.support.v4.app.Fragment implements View.OnClickListener, DialogInterface.OnClickListener, DatabaseAdapter.DatabaseAdapterListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -47,17 +44,13 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
 
     // TODOo: Rename and change types of parameters
     private String mFileID;
-    private String mTabPosition;
     private int mDialogStatus;
     private OnFragmentInteractionListener mListener;
 
 
-    CustomAdapter customAdapterTagNotes;
     private CustomAdapterTags mCustomAdapterTags;
     private ArrayList<String> mNotesListTagNotes;
     private ExpandableListView mListViewTag;
-    private Handler mHandler = null;
-    public static String tempString = "subject_fragment_tag";
 
     /**
      * Use this factory method to create a new instance of
@@ -69,15 +62,15 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
      */
     // TODOo: Rename and change types and number of parameters
     public static FragmentTagNotes newInstance(String param1, String param2) {
-        FragmentTagNotes fragment = new FragmentTagNotes();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        FragmentTagNotes fragment = new FragmentTagNotes ();
+        Bundle args = new Bundle ();
+        args.putString (ARG_PARAM1, param1);
+        args.putString (ARG_PARAM2, param2);
+        fragment.setArguments (args);
         return fragment;
     }
 
-    public void setArgParam1(String param1){
+    public void setArgParam1(String param1) {
         this.mFileID = param1;
     }
 
@@ -87,15 +80,14 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState (outState);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mFileID = getArguments().getString(ARG_PARAM1);
-            mTabPosition = getArguments().getString(ARG_PARAM2);
+        super.onCreate (savedInstanceState);
+        if (getArguments () != null) {
+            mFileID = getArguments ().getString (ARG_PARAM1);
         }
     }
 
@@ -103,23 +95,23 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tag_notes, container, false);
+        return inflater.inflate (R.layout.fragment_tag_notes, container, false);
     }
 
     // TODOo: Rename method, update argument and hook method into UI event
     public void listDataSetChanged() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(this.getClass().getName(),null);
+            mListener.onFragmentInteraction (this.getClass ().getName (), null);
         }
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context activity) {
+        super.onAttach (activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException (activity.toString ()
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -127,25 +119,16 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
-        ImageButton btnAddNotes = (ImageButton) getActivity().findViewById(R.id.buttonAddNotesTags);
+        ImageButton btnAddNotes = (ImageButton) getActivity ().findViewById (R.id.buttonAddNotesTags);
         btnAddNotes.setOnClickListener (this);
-        btnAddNotes.setVisibility(View.INVISIBLE);
+        btnAddNotes.setVisibility (View.INVISIBLE);
 //        ListView mListViewTag = (ListView) getActivity().findViewById(R.id.listNotesAll);
 
-        mListViewTag = (ExpandableListView) getActivity().findViewById(R.id.expandableListNotesTags);
-        mHandler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case GlobalData.POPULATE_LIST_VIEW:// if receive massage
-                        //populateListView();
-                        listDataSetChanged();
-                }
-            }
-        };
+        mListViewTag = (ExpandableListView) getActivity ().findViewById (R.id.expandableListNotesTags);
 
-        mNotesListTagNotes = new ArrayList<>();
+        mNotesListTagNotes = new ArrayList<> ();
 //        customAdapterTagNotes = new CustomAdapter(mNotesListTagNotes, getActivity(),tempString , mHandler);
-        mCustomAdapterTags = new CustomAdapterTags(getActivity(),Long.parseLong(mFileID) + 1);
+        mCustomAdapterTags = new CustomAdapterTags (getActivity (), Integer.parseInt (mFileID) + 1);
         mListViewTag.setTag (R.string.filename, mFileID);
         mListViewTag.setTag (R.string.list_object, mNotesListTagNotes);
         mListViewTag.setAdapter (mCustomAdapterTags);
@@ -156,39 +139,38 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
 //        int width = dm.widthPixels;
 //
 //        mListViewTag.setIndicatorBounds (width, width);
-        populateListView();
+        populateListView ();
 
     }
 
     @Override
     public void onDetach() {
-        super.onDetach();
+        super.onDetach ();
         mListener = null;
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.buttonAddNotes) {
+        if (v.getId () == R.id.buttonAddNotes) {
             if (mDialogStatus == DIALOG_BUTTON_NOT_CLICKED) {
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder (getActivity());
-                builder.setTitle(R.string.add_notes_str);
-                builder.setCancelable(true);
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                builder.setView(inflater.inflate(R.layout.dialog_add_notes, null));
-                builder.setNegativeButton(R.string.cancel_str, new DialogInterface.OnClickListener() {
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder (getActivity ());
+                builder.setTitle (R.string.add_notes_str);
+                builder.setCancelable (true);
+                builder.setView (R.layout.dialog_add_notes);
+                builder.setNegativeButton (R.string.cancel_str, new DialogInterface.OnClickListener () {
                     public void onClick(DialogInterface dialog, int id) {
 
                     }
                 });
-                builder.setPositiveButton(R.string.done_str, this);
+                builder.setPositiveButton (R.string.done_str, this);
                 android.support.v7.app.AlertDialog alertDialog = builder.create ();
-                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                alertDialog.setOnDismissListener (new DialogInterface.OnDismissListener () {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         mDialogStatus = DIALOG_BUTTON_NOT_CLICKED;
                     }
                 });
-                alertDialog.show();
+                alertDialog.show ();
                 mDialogStatus = DIALOG_BUTTON_CLICKED;
             }
         }
@@ -197,50 +179,55 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
     @Override
     public void onClick(DialogInterface dialog, int which) {
         Dialog d = (Dialog) dialog;
-        EditText editText = (EditText) d.findViewById(R.id.editTextNotes);
-        EditText editTextAddTitle = (EditText) d.findViewById(R.id.editTextNotesTitle);
-        String note = editText.getText().toString();
-        String title = editTextAddTitle.getText().toString();
-        if (note.trim().isEmpty())
+        EditText editText = (EditText) d.findViewById (R.id.editTextNotes);
+        EditText editTextAddTitle = (EditText) d.findViewById (R.id.editTextNotesTitle);
+        String note = editText.getText ().toString ();
+        String title = editTextAddTitle.getText ().toString ();
+        if (note.trim ().isEmpty ())
             return;
-        JSONObject jsonObject = new JSONObject();
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter(getActivity());
-        String allNote = databaseAdapter.getNote(Long.parseLong(mFileID) + 1);
+        JSONObject jsonObject = new JSONObject ();
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mFileID) + 1);
 
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray = new JSONArray ();
         try {
             if (allNote != null) {
-                jsonArray = new JSONArray(allNote);
+                jsonArray = new JSONArray (allNote);
             } else {
-                Toast.makeText(getActivity(), "Note = null", Toast.LENGTH_LONG).show();
+                Toast.makeText (getActivity (), "Note = null", Toast.LENGTH_LONG).show ();
             }
         } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), R.string.JSONArray_parse_fail_err_str, Toast.LENGTH_SHORT).show();
+            e.printStackTrace ();
+            Toast.makeText (getActivity (), R.string.JSONArray_parse_fail_err_str, Toast.LENGTH_SHORT).show ();
         }
         try {
             int length;
-            length = jsonArray.length();
-            jsonObject.put(GlobalData.NOTE_BODY, note);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
-            long timeInMillis = System.currentTimeMillis();
-            String date = simpleDateFormat.format(new Date());
-            jsonObject.put(GlobalData.NOTE_DATE_STAMP, date);
-            jsonObject.put(GlobalData.NOTE_TIME_MILLIS, timeInMillis);
-            jsonObject.put(GlobalData.NOTE_TITLE, title);
-            jsonObject.put(GlobalData.NOTE_IS_STAR, false);
-            jsonArray.put(length, jsonObject);
+            length = jsonArray.length ();
+            jsonObject.put (GlobalData.NOTE_BODY, note);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm", Locale.US);
+            long timeInMillis = System.currentTimeMillis ();
+            String date = simpleDateFormat.format (new Date ());
+            jsonObject.put (GlobalData.NOTE_DATE_STAMP, date);
+            jsonObject.put (GlobalData.NOTE_TIME_MILLIS, timeInMillis);
+            jsonObject.put (GlobalData.NOTE_TITLE, title);
+            jsonObject.put (GlobalData.NOTE_IS_STAR, false);
+            jsonArray.put (length, jsonObject);
         } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show();
+            e.printStackTrace ();
+            Toast.makeText (getActivity (), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show ();
         }
         Boolean bool;
-        bool = databaseAdapter.setNote(Long.valueOf(mFileID) + 1, jsonArray.toString());
+        bool = databaseAdapter.setNote (Integer.valueOf (mFileID) + 1, jsonArray.toString ());
         if (bool) {
-            populateListView();
+            populateListView ();
         } else {
-            Toast.makeText(getActivity(), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show();
+            Toast.makeText (getActivity (), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show ();
         }
+
+    }
+
+    @Override
+    public void populateListViewData(String data, String query) {
 
     }
 
@@ -260,61 +247,61 @@ public class FragmentTagNotes extends android.support.v4.app.Fragment implements
     }
 
     public void populateListView() {
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter(getActivity());
-        String allNote = databaseAdapter.getNote(Long.parseLong(mFileID) + 1);
-        JSONArray jsonArray = new JSONArray();
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mFileID) + 1);
+        JSONArray jsonArray = new JSONArray ();
         //Toast.makeText(getActivity(),"jsonArray = "+jsonArray.toString()+"allNote"+allNote,Toast.LENGTH_LONG).show();
         try {
             if (allNote != null)
-                jsonArray = new JSONArray(allNote);
+                jsonArray = new JSONArray (allNote);
         } catch (JSONException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        mNotesListTagNotes.clear();
+        mNotesListTagNotes.clear ();
 
-        for (int count = 0; count < jsonArray.length(); count++) {
+        for (int count = 0; count < jsonArray.length (); count++) {
             try {
-                JSONObject jsonObject = jsonArray.getJSONObject(count);
-                String temp = jsonObject.toString();
-                mNotesListTagNotes.add(temp);
+                JSONObject jsonObject = jsonArray.getJSONObject (count);
+                String temp = jsonObject.toString ();
+                mNotesListTagNotes.add (temp);
             } catch (JSONException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
-        mCustomAdapterTags.setFileID(Long.valueOf (mFileID)+1);
+        mCustomAdapterTags.setFileID (Integer.valueOf (mFileID) + 1);
         mListViewTag.setAdapter (mCustomAdapterTags);
-        mCustomAdapterTags.notifyDataSetChanged();
+        mCustomAdapterTags.notifyDataSetChanged ();
     }
 
     public void populateListView(String query) {
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter(getActivity());
-        String allNote = databaseAdapter.getNote(Long.parseLong(mFileID) + 1);
-        JSONArray jsonArray = new JSONArray();
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mFileID) + 1);
+        JSONArray jsonArray = new JSONArray ();
         //Toast.makeText(getActivity(),"jsonArray = "+jsonArray.toString()+"allNote"+allNote,Toast.LENGTH_LONG).show();
         try {
             if (allNote != null)
-                jsonArray = new JSONArray(allNote);
+                jsonArray = new JSONArray (allNote);
         } catch (JSONException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        mNotesListTagNotes.clear();
+        mNotesListTagNotes.clear ();
 
-        for (int count = 0; count < jsonArray.length(); count++) {
+        for (int count = 0; count < jsonArray.length (); count++) {
             try {
-                JSONObject jsonObject = jsonArray.getJSONObject(count);
-                String temp = jsonObject.toString();
+                JSONObject jsonObject = jsonArray.getJSONObject (count);
+                String temp = jsonObject.toString ();
                 String noteTitle = jsonObject.getString (GlobalData.NOTE_TITLE);
                 String noteBody = jsonObject.getString (GlobalData.NOTE_BODY);
-                if((noteBody.toLowerCase ()).contains (query.toLowerCase ()) || (noteTitle.toLowerCase ()).contains (query.toLowerCase ())){
-                    mNotesListTagNotes.add(temp);
+                if ((noteBody.toLowerCase ()).contains (query.toLowerCase ()) || (noteTitle.toLowerCase ()).contains (query.toLowerCase ())) {
+                    mNotesListTagNotes.add (temp);
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
-        mCustomAdapterTags.setFileID(Long.valueOf (mFileID)+1);
+        mCustomAdapterTags.setFileID (Integer.valueOf (mFileID) + 1);
         mListViewTag.setAdapter (mCustomAdapterTags);
-        mCustomAdapterTags.notifyDataSetChanged();
+        mCustomAdapterTags.notifyDataSetChanged ();
     }
 
 }

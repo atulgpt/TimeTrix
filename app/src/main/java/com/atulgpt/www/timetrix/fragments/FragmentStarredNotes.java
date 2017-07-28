@@ -1,12 +1,12 @@
 package com.atulgpt.www.timetrix.fragments;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,9 +19,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.adapters.RecyclerViewAdapter;
-import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.utils.GlobalData;
 import com.atulgpt.www.timetrix.utils.NoteUtil;
 
@@ -42,8 +42,10 @@ import java.util.Locale;
  * Use the {@link FragmentStarredNotes#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentStarredNotes extends android.support.v4.app.Fragment implements View.OnClickListener,
-        DialogInterface.OnClickListener, RecyclerViewAdapter.OnListAdapterInteractionListener {
+public class FragmentStarredNotes extends android.support.v4.app.Fragment
+        implements View.OnClickListener, DialogInterface.OnClickListener,
+        RecyclerViewAdapter.OnListAdapterInteractionListener,
+        DatabaseAdapter.DatabaseAdapterListener {
     private static final String TAG = FragmentStarredNotes.class.getSimpleName ();
     private static final Boolean DEBUG = true;
 
@@ -118,7 +120,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach (activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
@@ -131,11 +133,26 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
-        ImageButton btnAddNotes = (ImageButton) getActivity ().findViewById (R.id.buttonAddNotesStar);
+    }
+
+    /**
+     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     * has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once
+     * they know their view hierarchy has been completely created.  The fragment's
+     * view hierarchy is not however attached to its parent at this point.
+     *
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     */
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated (view, savedInstanceState);
+        ImageButton btnAddNotes = (ImageButton) view.findViewById (R.id.buttonAddNotesStar);
         btnAddNotes.setVisibility (View.INVISIBLE);
         //btnAddNotes.setOnClickListener(this);
 //        mListViewStar = (ListView) getActivity().findViewById(R.id.listNotesStarred);
-        mRecyclerViewStar = (RecyclerView) getActivity ().findViewById (R.id.recyclerNotesStarred);
+        mRecyclerViewStar = (RecyclerView) view.findViewById (R.id.recyclerNotesStarred);
 
         mNotesListStarredNotes = new ArrayList<> ();
 //        mCustomAdapterStarredNotes = new CustomAdapter(mNotesListStarredNotes, getActivity(), tempString);
@@ -152,8 +169,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
         LinearLayoutManager llm = new LinearLayoutManager (getActivity ());
         llm.setOrientation (LinearLayoutManager.VERTICAL);
         mRecyclerViewStar.setLayoutManager (llm);
-        populateListView ();
-
+        populateListViewInBackground ();
     }
 
     @Override
@@ -167,18 +183,17 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
         if (v.getId () == R.id.buttonAddNotes) {
             //AlertDialog alertDialog = new AlertDialog(getActivity());
             if (mDialogStatus == DIALOG_BUTTON_NOT_CLICKED) {
-                AlertDialog.Builder builder = new AlertDialog.Builder (getActivity ());
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder (getActivity ());
                 builder.setTitle (R.string.add_notes_str);
                 builder.setCancelable (true);
-                LayoutInflater inflater = getActivity ().getLayoutInflater ();
-                builder.setView (inflater.inflate (R.layout.dialog_add_notes, null));
+                builder.setView (R.layout.dialog_add_notes);
                 builder.setNegativeButton (R.string.cancel_str, new DialogInterface.OnClickListener () {
                     public void onClick(DialogInterface dialog, int id) {
 
                     }
                 });
                 builder.setPositiveButton (R.string.done_str, this);
-                AlertDialog alertDialog = builder.create ();
+                android.support.v7.app.AlertDialog alertDialog = builder.create ();
                 alertDialog.setOnDismissListener (new DialogInterface.OnDismissListener () {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
@@ -201,8 +216,8 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
         if (note.trim ().isEmpty ())
             return;
         JSONObject jsonObject = new JSONObject ();
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        String allNote = databaseAdapter.getNote (Long.parseLong (mFileID) + 1);
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mFileID) + 1);
 
         JSONArray jsonArray = new JSONArray ();
         try {
@@ -233,9 +248,9 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
             Toast.makeText (getActivity (), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show ();
         }
         Boolean bool;
-        bool = databaseAdapter.setNote (Long.valueOf (mFileID) + 1, jsonArray.toString ());
+        bool = databaseAdapter.setNote (Integer.valueOf (mFileID) + 1, jsonArray.toString ());
         if (bool) {
-            populateListView ();
+            populateListViewInBackground ();
         } else {
             Toast.makeText (getActivity (), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show ();
         }
@@ -256,10 +271,10 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
                     NoteUtil noteUtil = new NoteUtil (getActivity ());
                     try {
                         JSONObject jsonObjectNote = new JSONObject (data3);
-                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Long.valueOf (mFileID) + 1);
+                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mFileID) + 1);
                         if (DEBUG)
                             Toast.makeText (getActivity (), "Note Added " + bool, Toast.LENGTH_SHORT).show ();
-                        populateListView ();
+                        populateListViewInBackground ();
                     } catch (JSONException e) {
                         e.printStackTrace ();
                         Toast.makeText (getActivity (), R.string.undo_failed_err_str, Toast.LENGTH_SHORT).show ();
@@ -276,34 +291,12 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
         }
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TOD: Update argument type and name
-        void onFragmentInteraction(String data1, String data2);
-    }
-
-    public void populateListView() {
-        populateListView ("");
-    }
-
-    public void populateListView(String query) {
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity ());
-        String allNote = databaseAdapter.getNote (Long.parseLong (mFileID) + 1);
+    @Override
+    public void populateListViewData(String allNotes, String query) {
         JSONArray jsonArray = new JSONArray ();
-        //Toast.makeText(getActivity(),"jsonArray = "+jsonArray.toString()+"allNote"+allNote,Toast.LENGTH_LONG).show();
         try {
-            if (allNote != null)
-                jsonArray = new JSONArray (allNote);
+            if (allNotes != null)
+                jsonArray = new JSONArray (allNotes);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
@@ -329,4 +322,28 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment implem
         mRecyclerViewAdapter.notifyDataSetChanged ();
     }
 
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TOD: Update argument type and name
+        void onFragmentInteraction(String data1, String data2);
+    }
+
+    public void populateListViewInBackground() {
+        populateListViewInBackground ("");
+    }
+
+    public void populateListViewInBackground(String query) {
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
+        databaseAdapter.getNotesForSectionInBackground (Integer.parseInt (mFileID) + 1, query);
+    }
 }

@@ -25,14 +25,14 @@ import java.util.ArrayList;
  */
 public class CustomAdapterTags extends BaseExpandableListAdapter {
     private final Context mContext;
-    private Long mFileID;
+    private int mFileID;
 
-    public CustomAdapterTags(Context context, long param) {
+    public CustomAdapterTags(Context context, int param) {
         this.mContext = context;
         this.mFileID = param;
     }
 
-    public void setFileID(Long fileID) {
+    public void setFileID(int fileID) {
         this.mFileID = fileID;
     }
 

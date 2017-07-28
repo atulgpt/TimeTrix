@@ -4,13 +4,13 @@
     <data>
         <variable
             name="subject"
-            type="com.atulgpt.www.timetrix.dataBinders.SubjectsDetailsBinder"/>
+            type="com.atulgpt.www.timetrix.dataBinders.SectionDetailsBinder"/>
     </data>
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".NoteDetailsActivity">
+    tools:context=".SectionDetailsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarSubDetail"
@@ -21,71 +21,57 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/testInputLayoutEnterSection"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/course_name_str"
-        android:id="@+id/courseNameEditText"
         android:layout_below="@+id/toolbarSubDetail"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="22sp"/>
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp">
 
-    <TextView
+        <EditText
+            android:id="@+id/textViewSectionName"
+            android:text="@{subject.name}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/section_name_str"
+            android:maxLines="1"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/testInputLayoutEnterDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/testInputLayoutEnterSection"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp">
+
+        <EditText
+            android:id="@+id/textViewDescriptionName"
+            android:text="@{subject.description}"
+            android:layout_alignBaseline="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/description_str"
+            android:maxLines="1"
+            android:lines="4"
+            android:gravity="top|start"/>
+    </android.support.design.widget.TextInputLayout>
+    <Button
+        android:id="@+id/update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@{subject.name}"
-        android:id="@+id/textViewCourseName"
-        android:layout_below="@+id/toolbarSubDetail"
-        android:layout_toRightOf="@+id/courseNameEditText"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="40dp"
-        android:textSize="22sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/prof_name_str"
-        android:id="@+id/textView5"
-        android:layout_below="@+id/courseNameEditText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:textSize="22sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@{subject.profName}"
-        android:id="@+id/textViewProfName"
-        android:layout_alignTop="@+id/textView5"
-        android:layout_toRightOf="@+id/textView5"
-        android:layout_toEndOf="@+id/textView5"
-        android:layout_marginLeft="40dp"
-        android:textSize="22sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location_str"
-        android:id="@+id/textView7"
-        android:layout_below="@+id/textView5"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:textSize="22sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@{subject.subjectLocation}"
-        android:id="@+id/textViewLocation"
-        android:layout_below="@+id/textViewProfName"
-        android:layout_toRightOf="@+id/textView7"
-        android:layout_toEndOf="@+id/textView7"
-        android:layout_marginLeft="40dp"
-        android:textSize="22sp"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/testInputLayoutEnterDescription"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/update_str"/>
 </RelativeLayout>
 </layout>

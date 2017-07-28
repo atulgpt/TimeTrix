@@ -35,7 +35,7 @@
     <string name="edit_the_note_str">Edit the note</string>
     <string name="delete_the_note_str">Delete the note</string>
     <string name="add_note_str">Add note</string>
-    <string name="add_subject_str">Add section</string>
+    <string name="add_section_str">Add section</string>
     <string name="give_feedback_here_str">Give feedback here!</string>
     <string name="submit_str">Submit</string>
     <string name="select_a_choice">Select a choice</string>
@@ -43,8 +43,8 @@
     <string name="starred_str">Starred</string>
     <string name="expired_str">Tags</string>
     <string name="search_the_notes_str">Search the notes</string>
-    <string name="add_another_subject_str">Add another section</string>
-    <string name="title_activity_add_another_subject">Add another section</string>
+    <string name="add_another_section_str">Add another section</string>
+    <string name="title_activity_add_another_section">Add another section</string>
     <string name="oops_made_a_mistake_str">Oops! Made a mistake!</string>
     <string name="undo_str">Undo</string>
     <string name="all_note_is_corrupted_err_str">allNote is corrupted</string>
@@ -61,7 +61,7 @@
     <string name="enter_note_desc_str">Enter description</string>
     <string name="enter_sub_name_str">Enter the section name</string>
     <string name="first_time_use_app_str">First time using the app! Don\'t worry just fill in the following details!</string>
-    <string name="subjects_str">Subjects</string>
+    <string name="sections_str">Sections</string>
     <string name="empty_tag_nt_allowed_to_str">Empty tag is not allowed</string>
     <string name="enable_password_protection_str">Enable password protection: </string>
     <string name="enable_cloud_sync_str">Enable cloud syncing:</string>
@@ -137,14 +137,14 @@
     <string name="go_back_str">Go Back</string>
 
     <string name="transition_string">transitionTest</string>
-    <string name="delete_subject_str">Delete the Subject</string>
-    <string name="do_you_want_del_sub_str">Do you want to delete this subject</string>
+    <string name="delete_section_str">Delete the Section</string>
+    <string name="do_you_want_del_sub_str">Do you want to delete this section</string>
     <string name="ok_str">OK</string>
     <string name="are_you_sure_str">Are you sure?</string>
-    <string name="all_your_inform_deleted_str">All you information related to the subject will be deleted!</string>
-    <string name="details_str">Details</string>
-    <string name="course_name_str">Course Name:</string>
-    <string name="prof_name_str">Prof. Name:</string>
+    <string name="all_your_inform_deleted_str">All you information related to the section will be deleted!</string>
+    <string name="section_details_str">Section Details</string>
+    <string name="section_name_str">Section Name:</string>
+    <string name="description_name_str">Description:</string>
     <string name="location_str">Location:</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
@@ -152,6 +152,11 @@
         based on your message history
     </string>
     <string name="confirm_the_password">Confirm the password_str</string>
+    <string name="details_str">Details</string>
+    <string name="description_str">Description</string>
+    <string name="update_str">Update</string>
+    <string name="empty_field_not_allowed_str">Empty field is not allowed</string>
+    <string name="password_didnt_match_str">Password did not match!</string>
 
     <string-array name="list_preference_entries">
         <item>Entry 1</item>

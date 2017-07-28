@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.atulgpt.www.timetrix.R;
 
 /**
  * Created by atulgupta on 23-06-2016 and 23 at 11:39 PM for TimeTrix .
+ * Custom dialog for adding new notes
  */
 public class DialogAddNewNote extends DialogFragment {
     int mNum;
