@@ -56,7 +56,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     private static final int DIALOG_BUTTON_NOT_CLICKED = 0;
 
     // TODOo: Rename and change types of parameters
-    private String mNoteIndex;
+    private String mSectionIndex;
     private int mDialogStatus;
     private OnFragmentInteractionListener mOnFragmentInteractionListener;
     //private static CustomAdapter.OnListAdapterInteractionListener mOnListAdapterInteractionListener;
@@ -84,8 +84,8 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         return fragment;
     }
 
-    public void setNoteIndex(String param1) {
-        this.mNoteIndex = param1;
+    public void setSectionIndex(String param1) {
+        this.mSectionIndex = param1;
     }
 
 
@@ -102,7 +102,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         if (getArguments () != null) {
-            mNoteIndex = getArguments ().getString (ARG_NOTE_INDEX);
+            mSectionIndex = getArguments ().getString (ARG_NOTE_INDEX);
         }
 
     }
@@ -147,12 +147,14 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             throw new ClassCastException (activity.toString ()
                     + " must implement OnFragmentInteractionListener");
         }
-//        ((StartupPage)activity).updateTitleOnSectionAttached (Integer.parseInt (mNoteIndex));
+//        ((StartupPage)activity).updateTitleOnSectionAttached (Integer.parseInt (mSectionIndex));
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
+        mSectionIndex = String.valueOf (mOnFragmentInteractionListener.getSectionIndex ());
+        populateListView ();
     }
 
     /**
@@ -183,7 +185,6 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
         LinearLayoutManager llm = new LinearLayoutManager (getActivity ());
         llm.setOrientation (LinearLayoutManager.VERTICAL);
         mRecyclerViewAllNotes.setLayoutManager (llm);
-        populateListView ();
     }
 
     @Override
@@ -240,10 +241,10 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             return;
         JSONObject jsonObject = new JSONObject ();
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
-        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mNoteIndex) + 1);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mSectionIndex) + 1);
         JSONArray js = new JSONArray ();
         if (DEBUG)
-            Log.d (TAG, "onClick allNote = " + allNote + " SubjectId -1 = " + mNoteIndex + " empty json = " + js + " empty 2nd =" + js.toString ());
+            Log.d (TAG, "onClick allNote = " + allNote + " SubjectId -1 = " + mSectionIndex + " empty json = " + js + " empty 2nd =" + js.toString ());
         JSONArray jsonArray = new JSONArray ();
         try {
             if (allNote != null) {
@@ -275,7 +276,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             if (DEBUG) Log.d (TAG, "onClick 1." + getString (R.string.file_could_not_update_str));
         }
         Boolean bool;
-        bool = databaseAdapter.setNote (Integer.parseInt (mNoteIndex) + 1, jsonArray.toString ());
+        bool = databaseAdapter.setNote (Integer.parseInt (mSectionIndex) + 1, jsonArray.toString ());
         if (DEBUG) Log.d (TAG, "onClick checking JSONArray" + jsonArray.toString ());
         if (bool) {
             populateListView ();
@@ -300,7 +301,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
                     NoteUtil noteUtil = new NoteUtil (getActivity ());
                     try {
                         JSONObject jsonObjectNote = new JSONObject (data3);
-                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mNoteIndex) + 1);
+                        Boolean bool = noteUtil.addNoteAtPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mSectionIndex) + 1);
                         if (DEBUG)
                             Toast.makeText (getActivity (), "Note Added " + bool, Toast.LENGTH_SHORT).show ();
                         populateListView ();
@@ -334,6 +335,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     public interface OnFragmentInteractionListener {
         // TODOo: Update argument type and name
         void onFragmentInteraction(String data1, String data2);
+        int  getSectionIndex();
     }
 
     public void populateListView() {
@@ -344,8 +346,12 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
      * @param query search string from the parent activity to display in the recyclerView
      */
     public void populateListView(String query) {
+        Context context = getActivity ();
+        if(getActivity () == null){
+            return;
+        }
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
-        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mNoteIndex) + 1);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mSectionIndex) + 1);
         JSONArray jsonArray = new JSONArray ();
         try {
             if (allNote != null)
@@ -371,13 +377,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
                 Toast.makeText (getActivity (), R.string.updating_list_failed_err_str, Toast.LENGTH_LONG).show ();
             }
         }
-        //  Toast.makeText(getActivity(), " 2. noteList"+mArrayListAllNotes.toString(), Toast.LENGTH_SHORT).show();
-//        mCustomAdapterAllNotes.setNoteIndex (mNoteIndex);
-//        mListViewAll.setAdapter (mCustomAdapterAllNotes);
-//        //Toast.makeText(getActivity(), "adapt attached " +mListViewAll.getAdapter() , Toast.LENGTH_SHORT).show();
-//        mCustomAdapterAllNotes.notifyDataSetChanged ();
-
-        mCustomRecyclerViewAdapterAllNotes.setNoteIndex (mNoteIndex);
+        mCustomRecyclerViewAdapterAllNotes.setNoteIndex (mSectionIndex);
         mRecyclerViewAllNotes.setAdapter (mCustomRecyclerViewAdapterAllNotes);
         mCustomRecyclerViewAdapterAllNotes.notifyDataSetChanged ();
     }

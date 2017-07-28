@@ -56,12 +56,12 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     private static final int DIALOG_BUTTON_NOT_CLICKED = 0;
 
     // TODOo: Rename and change types of parameters
-    private String mFileID;
+    private String mSectionIndex;
     //private String mTabPosition;
     private int mDialogStatus;
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mOnFragmentInteractionListener;
 
-    private ArrayList<String> mNotesListStarredNotes;
+    private ArrayList<String> mArrayListStarredNotes;
 
     private RecyclerView mRecyclerViewStar;
     private RecyclerViewAdapter mRecyclerViewAdapter;
@@ -87,8 +87,8 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
         return fragment;
     }
 
-    public void setArgParam1(String param1) {
-        this.mFileID = param1;
+    public void setSectionIndex(String sectionIndex) {
+        this.mSectionIndex = sectionIndex;
     }
 
     public FragmentStarredNotes() {
@@ -99,7 +99,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         if (getArguments () != null) {
-            mFileID = getArguments ().getString (ARG_PARAM1);
+            mSectionIndex = getArguments ().getString (ARG_PARAM1);
             //mTabPosition = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -114,8 +114,8 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     }
 
     public void listDataSetChanged() {
-        if (mListener != null) {
-            mListener.onFragmentInteraction (this.getClass ().getName (), null);
+        if (mOnFragmentInteractionListener != null) {
+            mOnFragmentInteractionListener.onFragmentInteraction (this.getClass ().getName (), null);
         }
     }
 
@@ -123,7 +123,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     public void onAttach(Context activity) {
         super.onAttach (activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mOnFragmentInteractionListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException (activity.toString ()
                     + " must implement OnFragmentInteractionListener");
@@ -133,6 +133,8 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
+        mSectionIndex = String.valueOf (mOnFragmentInteractionListener.getSectionIndex());
+        populateListViewInBackground ();
     }
 
     /**
@@ -154,28 +156,27 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
 //        mListViewStar = (ListView) getActivity().findViewById(R.id.listNotesStarred);
         mRecyclerViewStar = (RecyclerView) view.findViewById (R.id.recyclerNotesStarred);
 
-        mNotesListStarredNotes = new ArrayList<> ();
-//        mCustomAdapterStarredNotes = new CustomAdapter(mNotesListStarredNotes, getActivity(), tempString);
-//        mListViewStar.setTag(R.string.filename, mFileID);
-//        mListViewStar.setTag(R.string.list_object, mNotesListStarredNotes);
+        mArrayListStarredNotes = new ArrayList<> ();
+//        mCustomAdapterStarredNotes = new CustomAdapter(mArrayListStarredNotes, getActivity(), tempString);
+//        mListViewStar.setTag(R.string.filename, mSectionIndex);
+//        mListViewStar.setTag(R.string.list_object, mArrayListStarredNotes);
 //        mListViewStar.setAdapter(mCustomAdapterStarredNotes);
 //        mListViewStar.setItemsCanFocus(true);
 //        registerForContextMenu(mListViewStar);
 
         mRecyclerViewStar.setHasFixedSize (true);
-        mRecyclerViewAdapter = new RecyclerViewAdapter (mNotesListStarredNotes, getActivity (), tempString);
+        mRecyclerViewAdapter = new RecyclerViewAdapter (mArrayListStarredNotes, getActivity (), tempString);
         mRecyclerViewStar.setAdapter (mRecyclerViewAdapter);
         mRecyclerViewAdapter.setOnListAdapterInteractionListener (this);
         LinearLayoutManager llm = new LinearLayoutManager (getActivity ());
         llm.setOrientation (LinearLayoutManager.VERTICAL);
         mRecyclerViewStar.setLayoutManager (llm);
-        populateListViewInBackground ();
     }
 
     @Override
     public void onDetach() {
         super.onDetach ();
-        mListener = null;
+        mOnFragmentInteractionListener = null;
     }
 
     @Override
@@ -217,7 +218,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
             return;
         JSONObject jsonObject = new JSONObject ();
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
-        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mFileID) + 1);
+        String allNote = databaseAdapter.getNotesForSection (Integer.parseInt (mSectionIndex) + 1);
 
         JSONArray jsonArray = new JSONArray ();
         try {
@@ -248,7 +249,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
             Toast.makeText (getActivity (), R.string.file_could_not_update_str, Toast.LENGTH_LONG).show ();
         }
         Boolean bool;
-        bool = databaseAdapter.setNote (Integer.valueOf (mFileID) + 1, jsonArray.toString ());
+        bool = databaseAdapter.setNote (Integer.valueOf (mSectionIndex) + 1, jsonArray.toString ());
         if (bool) {
             populateListViewInBackground ();
         } else {
@@ -271,7 +272,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
                     NoteUtil noteUtil = new NoteUtil (getActivity ());
                     try {
                         JSONObject jsonObjectNote = new JSONObject (data3);
-                        Boolean bool = noteUtil.addNoteAtAPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mFileID) + 1);
+                        Boolean bool = noteUtil.addNoteAtPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mSectionIndex) + 1);
                         if (DEBUG)
                             Toast.makeText (getActivity (), "Note Added " + bool, Toast.LENGTH_SHORT).show ();
                         populateListViewInBackground ();
@@ -300,7 +301,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
         } catch (JSONException e) {
             e.printStackTrace ();
         }
-        mNotesListStarredNotes.clear ();
+        mArrayListStarredNotes.clear ();
 
         for (int count = 0; count < jsonArray.length (); count++) {
             try {
@@ -310,14 +311,14 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
                 String noteBody = jsonObject.getString (GlobalData.NOTE_BODY);
                 if (jsonObject.getBoolean (GlobalData.NOTE_IS_STAR)) {
                     if ((noteBody.toLowerCase ()).contains (query.toLowerCase ()) || (noteTitle.toLowerCase ()).contains (query.toLowerCase ()) || query.equals ("")) {
-                        mNotesListStarredNotes.add (temp);
+                        mArrayListStarredNotes.add (temp);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
         }
-        mRecyclerViewAdapter.setNoteIndex (mFileID);
+        mRecyclerViewAdapter.setNoteIndex (mSectionIndex);
         mRecyclerViewStar.setAdapter (mRecyclerViewAdapter);
         mRecyclerViewAdapter.notifyDataSetChanged ();
     }
@@ -336,6 +337,8 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     public interface OnFragmentInteractionListener {
         // TOD: Update argument type and name
         void onFragmentInteraction(String data1, String data2);
+
+        int getSectionIndex();
     }
 
     public void populateListViewInBackground() {
@@ -344,6 +347,6 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
 
     public void populateListViewInBackground(String query) {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
-        databaseAdapter.getNotesForSectionInBackground (Integer.parseInt (mFileID) + 1, query);
+        databaseAdapter.getNotesForSectionInBackground (Integer.parseInt (mSectionIndex) + 1, query);
     }
 }

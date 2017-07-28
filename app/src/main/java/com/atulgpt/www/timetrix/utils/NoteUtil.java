@@ -77,7 +77,7 @@ public class NoteUtil {
         return deletedNote;
     }
 
-    public Boolean addNoteAtAPosition(long notePosition, JSONObject note, int sectionID) {
+    public Boolean addNoteAtPosition(long notePosition, JSONObject note, int sectionID) {
         if (notePosition < 0 || sectionID < 0)
             return false;
         JSONArray jsonArray = getNoteJSONArray (sectionID);

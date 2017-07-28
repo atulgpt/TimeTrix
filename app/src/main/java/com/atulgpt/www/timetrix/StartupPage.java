@@ -122,8 +122,8 @@ public class StartupPage extends AppCompatActivity implements
             int itemIndexNavDrawer = mSectionIndex + 1;  // accounting for header view
             mNavigationDrawerFragment.selectItemWithCallback (itemIndexNavDrawer);
         }
-        if(getIntent ().hasExtra (GlobalData.SECTION_INDEX)){
-            mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX,1);
+        if (getIntent ().hasExtra (GlobalData.SECTION_INDEX)) {
+            mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX, 1);
             int itemIndexNavDrawer = mSectionIndex + 1;
             mNavigationDrawerFragment.selectItemWithCallback (itemIndexNavDrawer);
         }
@@ -167,8 +167,6 @@ public class StartupPage extends AppCompatActivity implements
 //            Toast.makeText (StartupPage.this, "in ADD ANOTHER", Toast.LENGTH_SHORT).show ();
         } else {
             if (mViewPager != null && mPagerAdapter != null) {
-//                Toast.makeText (StartupPage.this, "in drawer", Toast.LENGTH_SHORT).show ();
-//              Toast.makeText(StartupPage.this, "in drawer   completed   "+ mSectionIndex, Toast.LENGTH_SHORT).show();
                 populateListView ();
             }
         }
@@ -243,7 +241,7 @@ public class StartupPage extends AppCompatActivity implements
             menu.findItem (R.id.action_mute).setChecked (!sharedPrefsUtil.isNotificationEnabled ());
             //restoreActionBar();
         }
-        Log.d (TAG, "onCreateOptionsMenu: menu = "+menu);
+        Log.d (TAG, "onCreateOptionsMenu: menu = " + menu);
 
 
         return super.onCreateOptionsMenu (menu);
@@ -349,6 +347,11 @@ public class StartupPage extends AppCompatActivity implements
         populateListView ();
     }
 
+    @Override
+    public int getSectionIndex(){
+        return mSectionIndex;
+    }
+
     private void populateListView() {
         populateListViewWithSearchQuery ("");
     }
@@ -358,22 +361,21 @@ public class StartupPage extends AppCompatActivity implements
         if (position == 0) {
             FragmentAllNotes fragmentAllNotes = (FragmentAllNotes) mRegisteredFragments.get (position);
             if (fragmentAllNotes != null) {
-                fragmentAllNotes.setNoteIndex (String.valueOf (mSectionIndex));
+                fragmentAllNotes.setSectionIndex (String.valueOf (mSectionIndex));
                 fragmentAllNotes.populateListView (searchQuery);
             }
-//            Toast.makeText(StartupPage.this, "in populate"+ position, Toast.LENGTH_SHORT).show();
         }
         if (position == 1) {
             FragmentStarredNotes fragmentStarredNotes = (FragmentStarredNotes) mRegisteredFragments.get (position);
             if (fragmentStarredNotes != null) {
-                fragmentStarredNotes.setArgParam1 (String.valueOf (mSectionIndex));
+                fragmentStarredNotes.setSectionIndex (String.valueOf (mSectionIndex));
                 fragmentStarredNotes.populateListViewInBackground (searchQuery);
             }
         }
         if (position == 2) {
             FragmentTagNotes fragmentTagNotes = (FragmentTagNotes) mRegisteredFragments.get (position);
             if (fragmentTagNotes != null) {
-                fragmentTagNotes.setArgParam1 (String.valueOf (mSectionIndex));
+                fragmentTagNotes.setSectionIndex (String.valueOf (mSectionIndex));
                 fragmentTagNotes.populateListView (searchQuery);
             }
         }
@@ -439,6 +441,7 @@ public class StartupPage extends AppCompatActivity implements
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Fragment fragment = (Fragment) super.instantiateItem (container, position);
+            if(DEBUG) Log.d (TAG, "instantiateItem: fragment = "+fragment);
             mRegisteredFragments.put (position, fragment);
             return fragment;
         }
@@ -465,7 +468,8 @@ public class StartupPage extends AppCompatActivity implements
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            mRegisteredFragments.remove (position);
+            mRegisteredFragments.remove (position);  //Fragment destroyed by the pager adapter,
+            // no need to store in mRegisteredFragments
             super.destroyItem (container, position, object);
         }
 
