@@ -98,7 +98,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
      */
     @Override
     public void onBackPressed() {
-        startActivity (new Intent (SettingsActivity.this, StartupPage.class).putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
+        startActivity (new Intent (SettingsActivity.this, StartupPage.class).
+                putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
         SettingsActivity.this.finish ();
     }
 
@@ -110,7 +111,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         int id = item.getItemId ();
 
         if (id == android.R.id.home) {
-            startActivity (new Intent (SettingsActivity.this, StartupPage.class).putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
+            startActivity (new Intent (SettingsActivity.this, StartupPage.class).
+                    putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
             SettingsActivity.this.finish ();
             return true;
         }

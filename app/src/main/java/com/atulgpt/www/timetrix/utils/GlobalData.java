@@ -5,10 +5,12 @@ package com.atulgpt.www.timetrix.utils;
  * Contains various constants and strings
  */
 public class GlobalData {
-    static final String PREF_SETTINGS = "sharedPreferences";
-    static final String IS_NOTIFICATION_ENABLED = "isNotificationIsEnabledOrNot";
-    static final String IS_PASSWORD_ENABLED = "isPasswordEnabledOrNot";
+    static final String PREF_SETTINGS = "Timetrix_preferences";
+    static final String IS_NOTIFICATION_DISABLED = "notificationSwitch";
+    static final String IS_PASSWORD_ENABLED = "passSwitch";
     static final String USER_NAME_AUTH = "userNameForAuthentication";
+    static final String USER_NAME = "userNameEditText";
+    public static final String USER_EMAIL = "emailEditText";
     static final String USER_PASS_AUTH = "userPasswordForAuthentication";
     static final String IS_SYNC_ENABLE = "isSyncInCloud";
 
@@ -39,4 +41,3 @@ public class GlobalData {
 
     public static final int REQUEST_FOR_SECTION_UPDATE = 0;
 }
-

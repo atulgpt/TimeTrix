@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.dataBinders.SectionDetailsBinder;
-import com.atulgpt.www.timetrix.databinding.ActivitySubjectDetailsBinding;
+import com.atulgpt.www.timetrix.databinding.ActivitySectionDetailsBinding;
 import com.atulgpt.www.timetrix.utils.GlobalData;
 
 public class SectionDetailsActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,7 +24,7 @@ public class SectionDetailsActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        ActivitySubjectDetailsBinding binding = DataBindingUtil.setContentView (this, R.layout.activity_subject_details);
+        ActivitySectionDetailsBinding binding = DataBindingUtil.setContentView (this, R.layout.activity_section_details);
         mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX, 1);
         Toolbar toolbar = (Toolbar) findViewById (R.id.toolbarSubDetail);
         setSupportActionBar (toolbar);

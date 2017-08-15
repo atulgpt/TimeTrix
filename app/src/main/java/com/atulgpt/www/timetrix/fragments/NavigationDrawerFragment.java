@@ -19,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.atulgpt.www.timetrix.R;
 import com.atulgpt.www.timetrix.adapters.CustomAdapter;
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.utils.SharedPrefsUtil;
 
 import java.util.ArrayList;
 
@@ -60,7 +62,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
-
+    private SharedPrefsUtil mSharedPrefsUtil;
     private int mCurrentSelectedPosition = 1;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
@@ -89,7 +91,15 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         // Select either the default item (0) or the last selected item.
         if (DEBUG)
             Log.d (TAG, "onCreate: currentPos = " + mCurrentSelectedPosition + " savedInstance: " + savedInstanceState);
-//        selectItemWithCallback (mCurrentSelectedPosition);
+
+        new SharedPreferences.OnSharedPreferenceChangeListener () {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals ("userNameEditText") || key.equals ("emailEditText")) {
+                    updateHeaderView ();
+                }
+            }
+        };
     }
 
 
@@ -104,8 +114,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         arrayList.add (getString (R.string.add_section_str));
         customAdapter = new CustomAdapter (arrayList, getActivity (), "navigation_drawer", null);
         mDrawerListView.setAdapter (customAdapter);
-        View headerView = View.inflate (getActivity (), R.layout.header_navigation, null);
-        mDrawerListView.addHeaderView (headerView);
+        mSharedPrefsUtil = new SharedPrefsUtil (getActivity ());
+        updateHeaderView (mSharedPrefsUtil.getUserEmail (), mSharedPrefsUtil.getUserName ());
         mDrawerListView.setOnItemClickListener (new AdapterView.OnItemClickListener () {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -318,7 +328,28 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
     public long getSectionNo() {
         return mDrawerListView.getAdapter ().getCount () - 2; // One is subtracted because we have
-        // to exclude last item and other for header view
+        // to exclude last item(add another subject) and other for header view
+    }
+
+    public void updateHeaderView(){
+        updateHeaderView (mSharedPrefsUtil.getUserEmail (),mSharedPrefsUtil.getUserName ());
+    }
+    public void updateHeaderView(String email, String name) {
+        View headerView;
+        if (mDrawerListView.getHeaderViewsCount () == 1) {
+            headerView = mDrawerListView.getChildAt (0);
+            mDrawerListView.removeHeaderView (headerView);
+            if (headerView == null) {
+                return;
+            }
+        } else {
+            headerView = View.inflate (getActivity (), R.layout.header_navigation, null);
+        }
+        TextView emailTextView = (TextView) headerView.findViewById (R.id.email);
+        TextView nameTextView = (TextView) headerView.findViewById (R.id.name);
+        emailTextView.setText (email);
+        nameTextView.setText (name);
+        mDrawerListView.addHeaderView (headerView);
     }
 
     /**

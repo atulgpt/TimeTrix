@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:key="passSwitch"
-        android:title="Enable Password"
-        android:summary="Protect your notes from unauthorised access"/>
+    <PreferenceCategory android:title="General">
+        <EditTextPreference
+            android:key="userNameEditText"
+            android:summary="Select User Name"
+            android:title="User Name"/>
+        <EditTextPreference
+            android:key="emailEditText"
+            android:summary="Enter Email Address"
+            android:title="Email"/>
+        <SwitchPreference
+            android:key="notificationSwitch"
+            android:summary="Disable notification from the app"
+            android:title="Mute Notification"/>
+    </PreferenceCategory>
 
-    <SwitchPreference
-        android:key="cloudSwitch"
-        android:title="Enable Sync"
-        android:summary="Allow cloud syncing"/>
+    <PreferenceCategory android:title="Data Management">
+        <SwitchPreference
+            android:key="cloudSwitch"
+            android:summary="Allow cloud syncing"
+            android:title="Enable Sync"/>
+        <SwitchPreference
+            android:key="passSwitch"
+            android:onClick="displayPasswordWindow"
+            android:summary="Protect your notes from unauthorised access"
+            android:title="Enable Password"/>
+        <Preference
+            android:key="resetData"
+            android:onClick="deleteAllDataWindow"
+            android:summary="@string/it_ll_delete_all_the_data_str"
+            android:title="@string/delete_all_data_str"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="About">
+        <Preference
+            android:key="termsAndCondition"
+            android:title="Terms and Conditions"/>
+        <Preference
+            android:summary="1.0.0"
+            android:title="App Version"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

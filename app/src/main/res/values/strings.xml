@@ -77,6 +77,7 @@
 
     <string name="facebook_app_id">922492101212322</string>
     <string name="user_str">User</string>
+    <string name="timetrix_str">TimeTrix</string>
 
     <!-- Strings related to SettingsActivity -->
 
@@ -157,6 +158,8 @@
     <string name="update_str">Update</string>
     <string name="empty_field_not_allowed_str">Empty field is not allowed</string>
     <string name="password_didnt_match_str">Password did not match!</string>
+    <string name="profile_picture_content_desc">Profile picture</string>
+    <string name="user_email_com_str">user@email.com</string>
 
     <string-array name="list_preference_entries">
         <item>Entry 1</item>

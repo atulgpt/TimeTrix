@@ -26,7 +26,7 @@
             android:id="@+id/drawer_header_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Profile picture"
+            android:contentDescription="@string/profile_picture_content_desc"
             android:paddingTop="16dp"
             app:srcCompat="@android:drawable/sym_def_app_icon"/>
 
@@ -36,13 +36,13 @@
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:text="@string/user_str"
+            android:text="@string/timetrix_str"
             />
 
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="user@email.com"/>
+            android:text="@string/user_email_com_str"/>
     </LinearLayout>
 </RelativeLayout>

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
 import com.atulgpt.www.timetrix.fragments.FragmentAllNotes;
@@ -121,11 +122,13 @@ public class StartupPage extends AppCompatActivity implements
             mSectionIndex = savedInstanceState.getInt (GlobalData.SECTION_INDEX);
             int itemIndexNavDrawer = mSectionIndex + 1;  // accounting for header view
             mNavigationDrawerFragment.selectItemWithCallback (itemIndexNavDrawer);
+            savedInstanceState = null;
         }
         if (getIntent ().hasExtra (GlobalData.SECTION_INDEX)) {
             mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX, 1);
             int itemIndexNavDrawer = mSectionIndex + 1;
             mNavigationDrawerFragment.selectItemWithCallback (itemIndexNavDrawer);
+            getIntent ().removeExtra (GlobalData.SECTION_INDEX);
         }
     }
 
@@ -144,7 +147,8 @@ public class StartupPage extends AppCompatActivity implements
                     mNavigationDrawerFragment.getSectionNo ());
         if (DEBUG)
             Log.d (TAG,
-                    "onNavigationDrawerItemSelected in add another before adjusting for header view" + position);
+                    "onNavigationDrawerItemSelected in add another before adjusting for header view"
+                            + position);
         if (position <= 0)
             return;
         if (DEBUG)
@@ -208,7 +212,7 @@ public class StartupPage extends AppCompatActivity implements
             // decide what to show in the action bar.
             getMenuInflater ().inflate (R.menu.menu_startup_page, menu);
             restoreActionBar ();
-            menu.findItem (R.id.action_mute).setChecked (!sharedPrefsUtil.isNotificationEnabled ());
+            menu.findItem (R.id.action_mute).setChecked (sharedPrefsUtil.isNotificationDisabled ());
 
             final MenuItem searchItem = menu.findItem (R.id.action_note_search);
             final SearchView searchView;
@@ -238,7 +242,7 @@ public class StartupPage extends AppCompatActivity implements
             return true;
         } else {
             getMenuInflater ().inflate (R.menu.menu_startup_page, menu);
-            menu.findItem (R.id.action_mute).setChecked (!sharedPrefsUtil.isNotificationEnabled ());
+            menu.findItem (R.id.action_mute).setChecked (!sharedPrefsUtil.isNotificationDisabled ());
             //restoreActionBar();
         }
         Log.d (TAG, "onCreateOptionsMenu: menu = " + menu);
@@ -254,7 +258,6 @@ public class StartupPage extends AppCompatActivity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId ();
-
         //noinspection SimplifiableIfStatement
         //if (id == R.id.action_note_search) {
         //Toast.makeText (StartupPage.this, "search btn clicked", Toast.LENGTH_SHORT).show ();
@@ -298,13 +301,14 @@ public class StartupPage extends AppCompatActivity implements
             builder.show ();
         }
         if (id == R.id.action_settings) {
-            Intent intent = new Intent (this, SettingsActivity.class);
+            Intent intent = new Intent (this, SettingsPreferenceActivity.class);
             startActivity (intent.putExtra (GlobalData.SECTION_INDEX, mSectionIndex));
             StartupPage.this.finish ();
             return true;
         }
         if (id == R.id.action_mute) {
             SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil (StartupPage.this);
+            Toast.makeText (this, "item checked", Toast.LENGTH_SHORT).show ();
             if (item.isChecked ()) {
                 item.setChecked (false);
                 sharedPrefsUtil.enableNotification ();
