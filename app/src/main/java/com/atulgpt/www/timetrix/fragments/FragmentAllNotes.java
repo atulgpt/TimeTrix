@@ -45,8 +45,11 @@ import java.util.Locale;
  * Use the {@link FragmentAllNotes#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentAllNotes extends android.support.v4.app.Fragment implements View.OnClickListener, DialogInterface.OnClickListener,
-        CustomAdapter.OnListAdapterInteractionListener, RecyclerViewAdapter.OnListAdapterInteractionListener, DatabaseAdapter.DatabaseAdapterListener {
+public class FragmentAllNotes extends android.support.v4.app.Fragment implements View.OnClickListener,
+        DialogInterface.OnClickListener,
+        CustomAdapter.OnListAdapterInteractionListener,
+        RecyclerViewAdapter.OnListAdapterInteractionListener,
+        DatabaseAdapter.DatabaseAdapterListener {
     private static final String TAG = FragmentAllNotes.class.getSimpleName ();
     private static final boolean DEBUG = true;
     private static final String ARG_NOTE_INDEX = "param1";
@@ -178,10 +181,10 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
 
 //        mCustomAdapterAllNotes = new CustomAdapter (mArrayListAllNotes, getActivity (), tempString, mHandlerAll);
         mRecyclerViewAllNotes.setHasFixedSize (true);
-        mCustomRecyclerViewAdapterAllNotes = new RecyclerViewAdapter (mArrayListAllNotes, getActivity (), tempString);
+        mCustomRecyclerViewAdapterAllNotes = new RecyclerViewAdapter (mArrayListAllNotes,
+                getActivity (), this, tempString);
 
         mRecyclerViewAllNotes.setAdapter (mCustomRecyclerViewAdapterAllNotes);
-        mCustomRecyclerViewAdapterAllNotes.setOnListAdapterInteractionListener (this);
         LinearLayoutManager llm = new LinearLayoutManager (getActivity ());
         llm.setOrientation (LinearLayoutManager.VERTICAL);
         mRecyclerViewAllNotes.setLayoutManager (llm);
@@ -322,6 +325,10 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     }
 
     @Override
+    public void itemClicked(int sectionIndex, int noteIndex) {
+    }
+
+    @Override
     public void onListAdapterInteractionListener(String data1, String data2) {
 
     }
@@ -335,7 +342,8 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
     public interface OnFragmentInteractionListener {
         // TODOo: Update argument type and name
         void onFragmentInteraction(String data1, String data2);
-        int  getSectionIndex();
+
+        int getSectionIndex();
     }
 
     public void populateListView() {
@@ -346,8 +354,7 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
      * @param query search string from the parent activity to display in the recyclerView
      */
     public void populateListView(String query) {
-        Context context = getActivity ();
-        if(getActivity () == null){
+        if (getActivity () == null) {
             return;
         }
         DatabaseAdapter databaseAdapter = new DatabaseAdapter (getActivity (), this);
@@ -361,7 +368,6 @@ public class FragmentAllNotes extends android.support.v4.app.Fragment implements
             Toast.makeText (getActivity (), R.string.all_note_is_corrupted_err_str, Toast.LENGTH_LONG).show ();
         }
         mArrayListAllNotes.clear ();
-        // Toast.makeText(getActivity(), " 1. noteList"+mArrayListAllNotes.toString(), Toast.LENGTH_SHORT).show();
 
         for (int count = 0; count < jsonArray.length (); count++) {
             try {

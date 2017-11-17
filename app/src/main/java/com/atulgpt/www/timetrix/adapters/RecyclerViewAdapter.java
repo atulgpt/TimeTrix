@@ -1,11 +1,11 @@
 package com.atulgpt.www.timetrix.adapters;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.CalendarContract;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -45,15 +45,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //private ArrayList<String> mArrayListBackup = new ArrayList<> ();
     private final Context mContext;
     private String mParam;
-    private OnListAdapterInteractionListener mOnListAdapterInteractionListener;
-    private String mNoteIndex;
-    //private SearchFilter mFilter;
+    private OnListAdapterInteractionListener mOnListAdapterInteractionListenerFragment,
+            mOnListAdapterInteractionListenerActivity;
+    private String mSectionIndex;
 
-    public RecyclerViewAdapter(ArrayList<String> list, Context context, String param) {
+    public RecyclerViewAdapter(ArrayList<String> list, Context context, Fragment fragment, String param) {
         this.mArrayList = list;
         this.mContext = context;
         this.mParam = param;
-        //mFilter = new SearchFilter (RecyclerViewAdapter.this);
+        mOnListAdapterInteractionListenerActivity = (OnListAdapterInteractionListener) context;
+        mOnListAdapterInteractionListenerFragment = (OnListAdapterInteractionListener) fragment;
     }
 
     /*public SearchFilter getFilter() {
@@ -77,70 +78,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    /*
-    private class SearchFilter extends Filter {
-        private RecyclerViewAdapter mRecycleViewAdapter;
-        private DatabaseAdapter mDatabaseAdapter = new DatabaseAdapter (mContext);
-
-        private SearchFilter(RecyclerViewAdapter recyclerViewAdapter) {
-            super ();
-            this.mRecycleViewAdapter = recyclerViewAdapter;
-
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-//            Toast.makeText (mContext, "call 1: "+mArrayListBackup+"   "+mArrayList, Toast.LENGTH_SHORT).show ();
-            for (int i = 0; i < mArrayList.size (); i++) {
-                mArrayListBackup.add (mArrayList.get (i));
-            }
-            FilterResults filterResults = new FilterResults ();
-            ArrayList<String> mListTemp = new ArrayList<> ();
-            if (charSequence.length () == 0) {
-                for (int i = 0; i < mArrayListBackup.size (); i++) {
-                    mArrayList.add (mArrayListBackup.get (i));
-                }
-                filterResults.count = mArrayList.size ();
-                filterResults.values = mArrayList;
-            } else {
-                for (int i = 0; i < mArrayList.size (); i++) {
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject (mArrayList.get (i));
-                    } catch (JSONException e) {
-                        e.printStackTrace ();
-                    }
-                    assert jsonObject != null;
-                    String tempNoteBody = null;
-                    try {
-                        tempNoteBody = jsonObject.getString (GlobalData.NOTE_BODY);
-                    } catch (JSONException e) {
-                        e.printStackTrace ();
-                    }
-                    assert tempNoteBody != null;
-                    if (tempNoteBody.toLowerCase ().contains (charSequence.toString ().toLowerCase ())) {
-                        mListTemp.add (mArrayList.get (i));
-                    }
-                }
-                mArrayList = mListTemp;
-                filterResults.count = mListTemp.size ();
-                filterResults.values = mListTemp;
-            }
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            this.mRecycleViewAdapter.notifyDataSetChanged ();
-        }
-    }
-    */
     public void setNoteIndex(String mNoteIndex) {
-        this.mNoteIndex = mNoteIndex;
-    }
-
-    public void setOnListAdapterInteractionListener(OnListAdapterInteractionListener onListAdapterInteractionListener) {
-        mOnListAdapterInteractionListener = onListAdapterInteractionListener;
+        this.mSectionIndex = mNoteIndex;
     }
 
     /**
@@ -194,7 +133,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      */
     @Override
     public void onBindViewHolder(ViewHolderNotes holder, int position) {
-        JSONObject jsonObject = new JSONObject ();
+        JSONObject jsonObject;
         String noteText = mContext.getString (R.string.lorem_ipsum_str), noteDateStamp = mContext.getString (R.string.lorem_ipsum_str), titleText = mContext.getString (R.string.lorem_ipsum_str);
         long noteTimeInMillis;
         try {
@@ -212,6 +151,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.title.setText (titleText);
         holder.popupMenuDots.setTag (position);
         holder.popupMenuDots.setOnClickListener (this);
+        holder.itemView.setOnClickListener (this);
+        holder.itemView.setTag (position);
     }
 
     /**
@@ -221,7 +162,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      */
     @Override
     public int getItemCount() {
-//        Toast.makeText (mContext, "size check= "+mArrayList.size (), Toast.LENGTH_SHORT).show ();
         return mArrayList.size ();
     }
 
@@ -237,50 +177,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             popupMenu.inflate (R.menu.menu_context_notes_list);
             PopupMenuHandler popupMenuHandler = new PopupMenuHandler (mContext, v);
             popupMenu.setOnMenuItemClickListener (popupMenuHandler);
-            int subjectID = (int) (Long.parseLong (mNoteIndex) + 1);
+            int sectionID = (Integer.parseInt (mSectionIndex) + 1);
             NoteUtil noteUtil = new NoteUtil (mContext);
             if (mParam.contains ("all"))
-                popupMenu.getMenu ().findItem (R.id.action_star).setChecked (noteUtil.getStarStatus ((int) v.getTag (), subjectID));
+                popupMenu.getMenu ().findItem (R.id.action_star).setChecked (noteUtil.getStarStatus ((int) v.getTag (), sectionID));
             else popupMenu.getMenu ().findItem (R.id.action_star).setChecked (true);
             popupMenu.show ();
-//            Toast.makeText (mContext, ""+noteUtil.getNotesForATag (subjectID,"note 3 tag"), Toast.LENGTH_LONG).show ();
-//            Log.d (TAG, "onClick "+noteUtil.getNotesForATag (subjectID,"note 3 tag"));
         } else {
-            ListView listView = (ListView) v.getParent ();
-            String fileID = (String) listView.getTag (R.string.filename);
-            int subjectID = (int) (Long.parseLong (fileID) + 1);
-            int notePosition = (int) v.getTag ();
-            NoteUtil noteUtil = new NoteUtil (mContext);
-            JSONArray jsonArray = noteUtil.getNoteJSONArray (subjectID);
-            AlertDialog.Builder builder = new AlertDialog.Builder (mContext);
-            builder.setCancelable (true);
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-            View viewDialog = inflater.inflate (R.layout.note_expanded_layout, null);
-            TextView titleTextView = (TextView) viewDialog.findViewById (R.id.noteTitleExpandedView);
-            TextView bodyTextView = (TextView) viewDialog.findViewById (R.id.noteBodyExpanderView);
-            try {
-                titleTextView.setText (jsonArray.getJSONObject (notePosition).getString (GlobalData.NOTE_TITLE));
-                bodyTextView.setText (jsonArray.getJSONObject (notePosition).getString (GlobalData.NOTE_BODY));
-            } catch (JSONException e) {
-                e.printStackTrace ();
-            }
-            builder.setView (viewDialog);
-            builder.setPositiveButton (R.string.done_str, new DialogInterface.OnClickListener () {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //Dialog d = (Dialog) dialog;
-                }
-            });
-            AlertDialog alertDialog = builder.create ();
-            alertDialog.show ();
+            int sectionID = Integer.parseInt (mSectionIndex) + 1;
+            int noteIndex = (int) v.getTag ();
+            mOnListAdapterInteractionListenerActivity.itemClicked (sectionID - 1, noteIndex);
         }
     }
 
     private class PopupMenuHandler implements PopupMenu.OnMenuItemClickListener {
         final Context context;
         View contextMenuDots;
-        //String mNoteIndex;
-        //CardView cardView;
         int rowPosition;
         long noteIndex;
 
@@ -303,12 +215,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String title = null, note = null;
 //            View rowView = (View) this.contextMenuDots.getParent ();
 //            cardView = (CardView) rowView.getParent ();
-            //mNoteIndex = (String) cardView.getTag(R.string.filename);
-            final int subjectID = (Integer.parseInt (RecyclerViewAdapter.this.mNoteIndex) + 1);
+            //mSectionIndex = (String) cardView.getTag(R.string.filename);
+            final int sectionID = (Integer.parseInt (RecyclerViewAdapter.this.mSectionIndex) + 1);
             JSONArray jsonArray;
             final NoteUtil noteUtil = new NoteUtil (context);
             LayoutInflater inflater = (LayoutInflater) context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-            jsonArray = noteUtil.getNoteJSONArray (subjectID);
+            jsonArray = noteUtil.getNoteJSONArray (sectionID);
             if (jsonArray == null)
                 return true;
 
@@ -319,12 +231,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 e.printStackTrace ();
             }
             if (id == R.id.action_delete) {
-                JSONObject deletedNote = noteUtil.deleteNote (noteIndex, subjectID);
+                JSONObject deletedNote = noteUtil.deleteNote (noteIndex, sectionID);
                 populateListView ("delete", String.valueOf (rowPosition), String.valueOf (deletedNote));
                 if (DEBUG) Log.d (TAG, "onMenuItemClick deleted");
                 Toast.makeText (context, R.string.note_deleted_to_str, Toast.LENGTH_SHORT).show ();
-//                if (mOnListAdapterInteractionListener != null) {
-//                    mOnListAdapterInteractionListener.onListAdapterInteractionListener (String.valueOf (rowPosition), String.valueOf (deletedNote));
+//                if (mOnListAdapterInteractionListenerFragment != null) {
+//                    mOnListAdapterInteractionListenerFragment.onListAdapterInteractionListener (String.valueOf (rowPosition), String.valueOf (deletedNote));
 //                }
                 return true;
             }
@@ -354,7 +266,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                 String title = editTextNoteTitle.getText ().toString ();
                                 if (note.trim ().isEmpty ())
                                     return;
-                                Boolean boolResponse = noteUtil.editNote (noteIndex, subjectID, note, title);
+                                Boolean boolResponse = noteUtil.editNote (noteIndex, sectionID, note, title);
                                 if (boolResponse) {
                                     populateListView ("edit", "", "");
                                 } else {
@@ -370,7 +282,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 inflater = (LayoutInflater) context.getSystemService (Context.LAYOUT_INFLATER_SERVICE);
                 View viewDialogTag = inflater.inflate (R.layout.dialog_add_tag, null);
                 AutoCompleteTextView editTextTag = (AutoCompleteTextView) viewDialogTag.findViewById (R.id.tag_editText);
-                ArrayList<String> tagStringList = noteUtil.getTotalTagsString (subjectID);
+                ArrayList<String> tagStringList = noteUtil.getDistinctTagsString (sectionID);
                 ArrayAdapter<String> adapter = new ArrayAdapter<> (context,
                         android.R.layout.simple_dropdown_item_1line, tagStringList);
                 editTextTag.setAdapter (adapter);
@@ -389,18 +301,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Dialog d = (Dialog) dialog;
-                                AutoCompleteTextView editTextTag = (AutoCompleteTextView) d.findViewById (R.id.tag_editText);
+                                AutoCompleteTextView editTextTag = (AutoCompleteTextView) d
+                                        .findViewById (R.id.tag_editText);
                                 String noteTag = editTextTag.getText ().toString ();
                                 if (noteTag.trim ().isEmpty ()) {
-                                    Toast.makeText (context, R.string.empty_tag_nt_allowed_to_str, Toast.LENGTH_LONG).show ();
+                                    Toast.makeText (context, R.string.empty_tag_nt_allowed_to_str,
+                                            Toast.LENGTH_LONG).show ();
                                     return;
                                 }
                                 Spinner colorSpinner = (Spinner) d.findViewById (R.id.color_spinner);
                                 String tagColor = (String) colorSpinner.getSelectedItem ();
-                                if (!noteUtil.addTag (noteIndex, subjectID, noteTag, tagColor)) {
-                                    Toast.makeText (context, R.string.operation_failed_tag_not_apply_to_str, Toast.LENGTH_SHORT).show ();
+                                if (!noteUtil.addTag (noteIndex, sectionID, noteTag, tagColor)) {
+                                    Toast.makeText (context, R.string.operation_failed_tag_not_apply_to_str,
+                                            Toast.LENGTH_SHORT).show ();
                                 }
-//                        Toast.makeText(context, "result for tag" + bool +"  "+ noteTag +"  "+ tagColor, Toast.LENGTH_SHORT).show();
                             }
                         })
                         .show ();
@@ -408,7 +322,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
 
             if (id == R.id.action_star) {
-                if (noteUtil.addOrRemoveStar (noteIndex, subjectID)) {
+                if (noteUtil.addOrRemoveStar (noteIndex, sectionID)) {
                     populateListView ("star", "", "");
                 } else {
                     Toast.makeText (context, R.string.file_could_not_update_str, Toast.LENGTH_LONG).show ();
@@ -433,13 +347,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private void populateListView(String event, String data1, String data2) {
         if (!event.equals ("delete"))
-            mOnListAdapterInteractionListener.onListAdapterInteractionListener ("populate", "", "");
+            mOnListAdapterInteractionListenerFragment.onListAdapterInteractionListener ("populate", "", "");
         else
-            mOnListAdapterInteractionListener.onListAdapterInteractionListener ("delete", data1, data2);
+            mOnListAdapterInteractionListenerFragment.onListAdapterInteractionListener ("delete", data1, data2);
     }
 
     public interface OnListAdapterInteractionListener {
         void onListAdapterInteractionListener(String data1, String data2, String data3);
+        void itemClicked(int sectionIndex, int noteIndex);
     }
 
 }

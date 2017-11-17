@@ -133,7 +133,7 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
-        mSectionIndex = String.valueOf (mOnFragmentInteractionListener.getSectionIndex());
+        mSectionIndex = String.valueOf (mOnFragmentInteractionListener.getSectionIndex ());
         populateListViewInBackground ();
     }
 
@@ -165,9 +165,9 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
 //        registerForContextMenu(mListViewStar);
 
         mRecyclerViewStar.setHasFixedSize (true);
-        mRecyclerViewAdapter = new RecyclerViewAdapter (mArrayListStarredNotes, getActivity (), tempString);
+        mRecyclerViewAdapter = new RecyclerViewAdapter (mArrayListStarredNotes, getActivity (),
+                this, tempString);
         mRecyclerViewStar.setAdapter (mRecyclerViewAdapter);
-        mRecyclerViewAdapter.setOnListAdapterInteractionListener (this);
         LinearLayoutManager llm = new LinearLayoutManager (getActivity ());
         llm.setOrientation (LinearLayoutManager.VERTICAL);
         mRecyclerViewStar.setLayoutManager (llm);
@@ -184,7 +184,8 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
         if (v.getId () == R.id.buttonAddNotes) {
             //AlertDialog alertDialog = new AlertDialog(getActivity());
             if (mDialogStatus == DIALOG_BUTTON_NOT_CLICKED) {
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder (getActivity ());
+                android.support.v7.app.AlertDialog.Builder builder =
+                        new android.support.v7.app.AlertDialog.Builder (getActivity ());
                 builder.setTitle (R.string.add_notes_str);
                 builder.setCancelable (true);
                 builder.setView (R.layout.dialog_add_notes);
@@ -259,20 +260,23 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
     }
 
     @Override
-    public void onListAdapterInteractionListener(final String eventName, final String data2, final String data3) {
+    public void onListAdapterInteractionListener(final String eventName, final String data2,
+                                                 final String data3) {
         if (eventName.equals ("populate") && !eventName.equals ("delete")) {
             listDataSetChanged ();
         }
         if (eventName.equals ("delete")) {
             listDataSetChanged ();
-            CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity ().findViewById (R.id.coordinatorLayout);
+            CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity ()
+                    .findViewById (R.id.coordinatorLayout);
             View.OnClickListener mOnClickListener = new View.OnClickListener () {
                 @Override
                 public void onClick(View v) {
                     NoteUtil noteUtil = new NoteUtil (getActivity ());
                     try {
                         JSONObject jsonObjectNote = new JSONObject (data3);
-                        Boolean bool = noteUtil.addNoteAtPosition (Long.valueOf (data2), jsonObjectNote, Integer.valueOf (mSectionIndex) + 1);
+                        Boolean bool = noteUtil.addNoteAtPosition (Long.valueOf (data2),
+                                jsonObjectNote, Integer.valueOf (mSectionIndex) + 1);
                         if (DEBUG)
                             Toast.makeText (getActivity (), "Note Added " + bool, Toast.LENGTH_SHORT).show ();
                         populateListViewInBackground ();
@@ -290,6 +294,11 @@ public class FragmentStarredNotes extends android.support.v4.app.Fragment
             snackView.setBackgroundColor (Color.DKGRAY);
             snackbar.show ();
         }
+    }
+
+    @Override
+    public void itemClicked(int sectionIndex, int noteIndex) {
+
     }
 
     @Override

@@ -183,42 +183,43 @@ public class NoteUtil {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
-        JSONArray jsonArray = getNoteJSONArray (sectionID);
-        if (jsonArray == null) {
+        JSONArray jsonArrayNote = getNoteJSONArray (sectionID);
+        if (jsonArrayNote == null) {
             return false;
         }
-        JSONObject jsonObject = null;
+        JSONObject jsonNote = null;
         try {
-            jsonObject = jsonArray.getJSONObject ((int) notePosition);
+            jsonNote = jsonArrayNote.getJSONObject ((int) notePosition);
         } catch (JSONException e) {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
         try {
-            if (jsonObject != null) {
-                jsonArrayTag = jsonObject.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
+            if (jsonNote != null) {
+                jsonArrayTag = jsonNote.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
             }
 
         } catch (JSONException e) {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
-        jsonArrayTag.put (jsonObjectTag);
+        if (!jsonArrayTag.toString ().contains (jsonObjectTag.toString ()))
+            jsonArrayTag.put (jsonObjectTag);
         try {
-            if (jsonObject != null) {
-                jsonObject.put (GlobalData.NOTE_TAG_ARRAY, jsonArrayTag);
+            if (jsonNote != null) {
+                jsonNote.put (GlobalData.NOTE_TAG_ARRAY, jsonArrayTag);
             }
         } catch (JSONException e) {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
         try {
-            jsonArray.put ((int) notePosition, jsonObject);
+            jsonArrayNote.put ((int) notePosition, jsonNote);
         } catch (JSONException e) {
             e.printStackTrace ();
             if (DEBUG) Log.d (TAG, "addTag " + e);
         }
-        return setNote (sectionID, jsonArray.toString ());
+        return setNote (sectionID, jsonArrayNote.toString ());
     }
 
     private JSONArray getTotalTags(int sectionID) { // FIXME: 07-05-2016 jsonArray should return unique tags and avoid repetition
@@ -251,7 +252,7 @@ public class NoteUtil {
         return jsonArrayTags;
     }
 
-    public ArrayList<String> getTotalTagsString(int sectionID) {
+    public ArrayList<String> getDistinctTagsString(int sectionID) {
         ArrayList<String> tagStringList = new ArrayList<> (5);
         JSONArray jsonArray = getTotalTags (sectionID);
         for (int i = 0; i < jsonArray.length (); i++) {
@@ -260,7 +261,7 @@ public class NoteUtil {
                 jsonObjectArray = (JSONArray) jsonArray.get (i);
             } catch (JSONException e) {
                 e.printStackTrace ();
-                if (DEBUG) Log.d (TAG, "1. getTotalTagsString " + e);
+                if (DEBUG) Log.d (TAG, "1. getDistinctTagsString " + e);
             }
             try {
                 if (jsonObjectArray != null) {
@@ -274,69 +275,67 @@ public class NoteUtil {
 
             } catch (JSONException e) {
                 e.printStackTrace ();
-                if (DEBUG) Log.d (TAG, "2. getTotalTagsString " + e + jsonObjectArray);
+                if (DEBUG) Log.d (TAG, "2. getDistinctTagsString " + e + jsonObjectArray);
             }
         }
         return tagStringList;
     }
 
-    public int getSubjectTagsCount(int sectionID) {
-        return getTotalTagsString (sectionID).size ();
-    }
-
-    public JSONArray getNotesForATag(int sectionID, String tag) {
-        JSONArray jsonArray = getNoteJSONArray (sectionID);
-        JSONArray outJSONArrayNotes = new JSONArray ();
-
+    public JSONArray getDistinctTags(int sectionID) {
+        JSONArray tagJSONArray = new JSONArray ();
+        JSONArray jsonArray = getTotalTags (sectionID);
         for (int i = 0; i < jsonArray.length (); i++) {
-            JSONObject jsonObjectNote = null;
+            JSONArray jsonArrayTagsForNote = null;
             try {
-                jsonObjectNote = jsonArray.getJSONObject (i);
-            } catch (JSONException e) {
-                e.printStackTrace ();
-                if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
-            }
-
-            JSONArray jsonArrayTagArray = null;
-            try {
-                if (jsonObjectNote != null) {
-                    if (jsonObjectNote.has (GlobalData.NOTE_TAG_ARRAY)) {
-                        jsonArrayTagArray = jsonObjectNote.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
+                jsonArrayTagsForNote = (JSONArray) jsonArray.get (i);
+                for (int j = 0; j < jsonArrayTagsForNote.length (); j++) {
+                    JSONObject jsonObjectTag = jsonArrayTagsForNote.getJSONObject (j);
+                    if (jsonObjectTag != null && !tagJSONArray.toString ().contains (jsonObjectTag.toString ())) {
+                        tagJSONArray.put (jsonObjectTag);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace ();
-                if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
+                if (DEBUG) Log.d (TAG, "getDistinctTags" + e + jsonArrayTagsForNote);
             }
-            if (jsonArrayTagArray != null) {
+        }
+        Log.d (TAG, "getDistinctTags: tagArray" + tagJSONArray);
+        return tagJSONArray;
+    }
 
-                for (int j = 0; j < jsonArrayTagArray.length (); j++) {
-                    JSONObject jsonObjectTag = null;
-                    try {
+    public int getSubjectTagsCount(int sectionID) {
+        return getDistinctTags (sectionID).length ();
+    }
 
+    public JSONArray getNotesForATag(int sectionID, String tagObject) {
+        JSONArray jsonArrayNotes = getNoteJSONArray (sectionID);
+        JSONArray outJSONArrayNotes = new JSONArray ();
+        for (int i = 0; i < jsonArrayNotes.length (); i++) {
+            JSONObject jsonObjectNote;
+            try {
+                jsonObjectNote = jsonArrayNotes.getJSONObject (i);
+                JSONArray jsonArrayTagArray;
+                if (jsonObjectNote.has (GlobalData.NOTE_TAG_ARRAY)) {
+                    jsonArrayTagArray = jsonObjectNote.getJSONArray (GlobalData.NOTE_TAG_ARRAY);
+                    for (int j = 0; j < jsonArrayTagArray.length (); j++) {
+                        JSONObject jsonObjectTag;
                         jsonObjectTag = jsonArrayTagArray.getJSONObject (j);
-                    } catch (JSONException e) {
-                        e.printStackTrace ();
-                        if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
-                    }
-                    try {
                         if (jsonObjectTag != null) {
-                            if (jsonObjectTag.getString (GlobalData.NOTE_TAG_NAME).equals (tag)) {
+                            if (jsonObjectTag.toString ().equals (tagObject)) {
                                 outJSONArrayNotes.put (jsonObjectNote);
                                 break;
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace ();
-                        if (DEBUG) Log.d (TAG, "getNotesForATag " + e);
                     }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace ();
             }
         }
         return outJSONArrayNotes;
     }
 
-    public int getNotesForATagCount(int sectionID, String tag) {
-        return getNotesForATag (sectionID, tag).length ();
+    public int getNotesForATagCount(int sectionID, String tagObject) {
+        return getNotesForATag (sectionID, tagObject).length ();
     }
 }

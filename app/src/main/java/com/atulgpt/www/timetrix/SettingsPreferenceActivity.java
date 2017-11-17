@@ -224,7 +224,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
             bindPreferenceSummaryToValue (findPreference ("cloudSwitch"));
             bindPreferenceSummaryToValue (findPreference ("passSwitch"));
             bindPreferenceSummaryToValue (findPreference ("resetData"));
-            bindPreferenceSummaryToValue (findPreference ("termsAndCondition"));
+            //bindPreferenceSummaryToValue (findPreference ("termsAndCondition"));
             Preference preference = findPreference ("passSwitch");
             preference.setOnPreferenceClickListener (new Preference.OnPreferenceClickListener () {
                 @Override

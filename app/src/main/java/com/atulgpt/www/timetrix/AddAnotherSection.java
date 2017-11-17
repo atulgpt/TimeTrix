@@ -24,7 +24,6 @@ public class AddAnotherSection extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAddSub);
         setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-//        Toast.makeText (AddAnotherSection.this, "bool in addAnother"+getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SEC_HOME,true), Toast.LENGTH_SHORT).show ();
         if (actionBar != null && getIntent ().getBooleanExtra (GlobalData.ADD_ANOTHER_SEC_HOME,true) ) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }

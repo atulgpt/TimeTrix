@@ -34,9 +34,6 @@
 
     <PreferenceCategory android:title="About">
         <Preference
-            android:key="termsAndCondition"
-            android:title="Terms and Conditions"/>
-        <Preference
             android:summary="1.0.0"
             android:title="App Version"/>
     </PreferenceCategory>

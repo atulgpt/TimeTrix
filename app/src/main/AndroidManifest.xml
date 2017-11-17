@@ -8,7 +8,7 @@
         android:allowBackup="true"
         android:allowClearUserData="true"
         android:fullBackupContent="true"
-        android:icon="@mipmap/icon"
+        android:icon="@mipmap/icon_teal"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data
@@ -41,8 +41,9 @@
             android:name=".AddAnotherSection"
             android:label="@string/title_activity_add_another_section">
         </activity>
-        <activity android:name=".SectionDetailsActivity"
-                  android:label="@string/details_str">
+        <activity
+            android:name=".SectionDetailsActivity"
+            android:label="@string/details_str">
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -55,6 +56,11 @@
             android:parentActivityName=".StartupPage">
         </activity>
         <activity android:name=".SearchActivity">
+        </activity>
+        <activity
+            android:name=".NoteDetailActivity"
+            android:label="@string/title_activity_note_detail"
+            android:theme="@style/AppTheme">
         </activity>
     </application>
 

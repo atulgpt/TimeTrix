@@ -10,7 +10,7 @@ public class GlobalData {
     static final String IS_PASSWORD_ENABLED = "passSwitch";
     static final String USER_NAME_AUTH = "userNameForAuthentication";
     static final String USER_NAME = "userNameEditText";
-    public static final String USER_EMAIL = "emailEditText";
+    static final String USER_EMAIL = "emailEditText";
     static final String USER_PASS_AUTH = "userPasswordForAuthentication";
     static final String IS_SYNC_ENABLE = "isSyncInCloud";
 
@@ -21,8 +21,10 @@ public class GlobalData {
     public static final String NOTE_TIME_MILLIS = "noteTimeInMillis";
     public static final String NOTE_INDEX = "noteIndex";
     static final String NOTE_TAG_ARRAY = "noteTagArray";
-    static final String NOTE_TAG_NAME = "noteTagName" ;
-    static final String NOTE_TAG_COLOR = "noteTagColor";
+    public static final String NOTE_DETAIL_ACTIVITY_ACTION = "noteDetailActivityAction";
+    public static final String NOTE_BODY_CHANGED_ACTION = "noteBodyChangedAction";
+    public static String NOTE_TAG_NAME = "noteTagName" ;
+    public static String NOTE_TAG_COLOR = "noteTagColor";
 
     public static final int POPULATE_LIST_VIEW = 25;
 

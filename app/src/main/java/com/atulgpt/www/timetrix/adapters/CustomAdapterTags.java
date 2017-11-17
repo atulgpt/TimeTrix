@@ -1,6 +1,7 @@
 package com.atulgpt.www.timetrix.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +11,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.atulgpt.www.timetrix.R;
-import com.atulgpt.www.timetrix.utils.NoteUtil;
 import com.atulgpt.www.timetrix.utils.GlobalData;
+import com.atulgpt.www.timetrix.utils.NoteUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created by atulgupta on 02-05-2016 at 12:22 AM for TimeTrix .
@@ -25,15 +24,15 @@ import java.util.ArrayList;
  */
 public class CustomAdapterTags extends BaseExpandableListAdapter {
     private final Context mContext;
-    private int mFileID;
+    private int mSectionID;
 
     public CustomAdapterTags(Context context, int param) {
         this.mContext = context;
-        this.mFileID = param;
+        this.mSectionID = param;
     }
 
     public void setFileID(int fileID) {
-        this.mFileID = fileID;
+        this.mSectionID = fileID;
     }
 
     private static class ViewHolderNotes {
@@ -53,14 +52,20 @@ public class CustomAdapterTags extends BaseExpandableListAdapter {
     @Override
     public int getGroupCount() {
         NoteUtil noteUtil = new NoteUtil (mContext);
-        return noteUtil.getSubjectTagsCount (mFileID);
+        return noteUtil.getSubjectTagsCount (mSectionID);
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
         NoteUtil noteUtil = new NoteUtil (mContext);
-        String tag = noteUtil.getTotalTagsString (mFileID).get (groupPosition);
-        return noteUtil.getNotesForATagCount (mFileID, tag);
+        String tag = null;
+        try {
+            tag = noteUtil.getDistinctTags (mSectionID).getJSONObject (groupPosition).
+                    toString ();
+        } catch (JSONException e) {
+            e.printStackTrace ();
+        }
+        return noteUtil.getNotesForATagCount (mSectionID, tag);
     }
 
     @Override
@@ -94,9 +99,25 @@ public class CustomAdapterTags extends BaseExpandableListAdapter {
         View view;
         view = inflater.inflate (R.layout.custom_row_tags, parent, false);
         NoteUtil noteUtil = new NoteUtil (mContext);
-        ArrayList<String> tagList = noteUtil.getTotalTagsString (mFileID);
+        JSONArray tagList = noteUtil.getDistinctTags (mSectionID);
         TextView textView = (TextView) view.findViewById (R.id.textViewTagRow);
-        textView.setText (tagList.get (groupPosition));
+        try {
+            textView.setText (tagList.getJSONObject (groupPosition).getString (GlobalData.NOTE_TAG_NAME));
+            String tagColor = tagList.getJSONObject (groupPosition).getString (GlobalData.NOTE_TAG_COLOR);
+            switch (tagColor) {
+                case "Yellow":
+                    textView.setTextColor (Color.YELLOW);
+                    break;
+                case "Red":
+                    textView.setTextColor (Color.RED);
+                    break;
+                case "Green":
+                    textView.setTextColor (Color.GREEN);
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace ();
+        }
         return view;
     }
 
@@ -112,38 +133,25 @@ public class CustomAdapterTags extends BaseExpandableListAdapter {
             viewHolderNotes = (ViewHolderNotes) convertView.getTag ();
         }
         NoteUtil noteUtil = new NoteUtil (mContext);
-        JSONArray jsonArrayNotesTag = noteUtil.getNotesForATag (mFileID, noteUtil.getTotalTagsString (mFileID).get (groupPosition));
-        JSONObject jsonObject = new JSONObject ();
-        String noteText = mContext.getString (R.string.lorem_ipsum_str), noteDateStamp = mContext.getString (R.string.lorem_ipsum_str), titleText = mContext.getString (R.string.lorem_ipsum_str);
-        long noteTimeInMillis;
+        JSONArray jsonArrayNotesTag = null;
         try {
+            jsonArrayNotesTag = noteUtil.getNotesForATag (mSectionID, noteUtil
+                    .getDistinctTags (mSectionID).getJSONObject (groupPosition).toString ());
+            JSONObject jsonObject;
+            String noteText = mContext.getString (R.string.lorem_ipsum_str), noteDateStamp = mContext.getString (R.string.lorem_ipsum_str), titleText = mContext.getString (R.string.lorem_ipsum_str);
+            long noteTimeInMillis;
             jsonObject = jsonArrayNotesTag.getJSONObject (childPosition);
-        } catch (JSONException e) {
-            e.printStackTrace ();
-        }
-        try {
             noteText = jsonObject.getString (GlobalData.NOTE_BODY);
-        } catch (JSONException e) {
-            e.printStackTrace ();
-        }
-        try {
             noteTimeInMillis = jsonObject.getLong (GlobalData.NOTE_TIME_MILLIS);
             noteDateStamp = (String) DateUtils.getRelativeTimeSpanString (noteTimeInMillis, System.currentTimeMillis (), 3, DateUtils.FORMAT_ABBREV_RELATIVE);
-        } catch (JSONException e) {
-            e.printStackTrace ();
-        }
-        try {
             titleText = jsonObject.getString (GlobalData.NOTE_TITLE);
+            viewHolderNotes.notes.setText (noteText);
+            viewHolderNotes.date.setText (noteDateStamp);
+            viewHolderNotes.title.setText (titleText);
         } catch (JSONException e) {
             e.printStackTrace ();
         }
-        viewHolderNotes.notes.setText (noteText);
-        viewHolderNotes.date.setText (noteDateStamp);
-        viewHolderNotes.title.setText (titleText);
         viewHolderNotes.popupMenuDots.setVisibility (View.INVISIBLE);
-//            Toast.makeText(mContext, "mParam in adapt ="+mParam, Toast.LENGTH_SHORT).show();
-
-
         return convertView;
     }
 

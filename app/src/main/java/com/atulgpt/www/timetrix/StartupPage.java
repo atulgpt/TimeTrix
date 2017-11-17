@@ -22,9 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.atulgpt.www.timetrix.adapters.DatabaseAdapter;
+import com.atulgpt.www.timetrix.adapters.RecyclerViewAdapter;
 import com.atulgpt.www.timetrix.fragments.FragmentAllNotes;
 import com.atulgpt.www.timetrix.fragments.FragmentStarredNotes;
 import com.atulgpt.www.timetrix.fragments.FragmentTagNotes;
@@ -40,6 +40,7 @@ public class StartupPage extends AppCompatActivity implements
         FragmentAllNotes.OnFragmentInteractionListener,
         FragmentStarredNotes.OnFragmentInteractionListener,
         FragmentTagNotes.OnFragmentInteractionListener,
+        RecyclerViewAdapter.OnListAdapterInteractionListener,
         SearchView.OnQueryTextListener {
 
     /**
@@ -48,10 +49,11 @@ public class StartupPage extends AppCompatActivity implements
     private static final String TAG = StartupPage.class.getSimpleName ();
     private static final Boolean DEBUG = true;
     private static final int NO_OF_TABS = 3;
-
+    private static final int NOTE_DETAIL_ACTIVITY_REQUEST = 1;
+    private static final int SECTION_UPDATE_ACTIVITY_REQUEST = 2;
+    private final DatabaseAdapter mDatabaseAdapter = new DatabaseAdapter (this, null);
     private int mSectionIndex;
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private final DatabaseAdapter mDatabaseAdapter = new DatabaseAdapter (this, null);
     private ViewPager mViewPager;
     private SparseArray<Fragment> mRegisteredFragments = new SparseArray<> ();
     /**
@@ -132,12 +134,42 @@ public class StartupPage extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Dispatch onPause() to fragments.
-     */
     @Override
-    protected void onPause() {
-        super.onPause ();
+    public void onSaveInstanceState(Bundle outState) {
+        //Called everytime like onPause() but not in the case of pressing back button
+        super.onSaveInstanceState (outState);
+        outState.putInt (GlobalData.SECTION_INDEX, mSectionIndex);
+    }
+
+    private void populateListView() {
+        populateListViewWithSearchQuery ("");
+    }
+
+    private void populateListViewWithSearchQuery(String searchQuery) {
+        int position = mViewPager.getCurrentItem ();
+        if (position == 0) {
+            FragmentAllNotes fragmentAllNotes = (FragmentAllNotes) mRegisteredFragments.get (position);
+            if (fragmentAllNotes != null) {
+                fragmentAllNotes.setSectionIndex (String.valueOf (mSectionIndex));
+                fragmentAllNotes.populateListView (searchQuery);
+            }
+        }
+        if (position == 1) {
+            FragmentStarredNotes fragmentStarredNotes = (FragmentStarredNotes) mRegisteredFragments.get (position);
+            if (fragmentStarredNotes != null) {
+                fragmentStarredNotes.setSectionIndex (String.valueOf (mSectionIndex));
+                fragmentStarredNotes.populateListViewInBackground (searchQuery);
+            }
+        }
+        if (position == 2) {
+            FragmentTagNotes fragmentTagNotes = (FragmentTagNotes) mRegisteredFragments.get (position);
+            if (fragmentTagNotes != null) {
+                fragmentTagNotes.setSectionIndex (String.valueOf (mSectionIndex));
+                fragmentTagNotes.populateListView (searchQuery);
+            }
+        }
+        if (DEBUG)
+            Log.d (TAG, "populateListViewInBackground  tab position :" + position + " with query = " + searchQuery);
     }
 
     @Override
@@ -145,10 +177,6 @@ public class StartupPage extends AppCompatActivity implements
         if (DEBUG)
             Log.d (TAG, "onNavigationDrawerItemSelected: count of sections = " +
                     mNavigationDrawerFragment.getSectionNo ());
-        if (DEBUG)
-            Log.d (TAG,
-                    "onNavigationDrawerItemSelected in add another before adjusting for header view"
-                            + position);
         if (position <= 0)
             return;
         if (DEBUG)
@@ -168,19 +196,11 @@ public class StartupPage extends AppCompatActivity implements
             }
             startActivity (intent);
             StartupPage.this.finish ();
-//            Toast.makeText (StartupPage.this, "in ADD ANOTHER", Toast.LENGTH_SHORT).show ();
         } else {
             if (mViewPager != null && mPagerAdapter != null) {
                 populateListView ();
             }
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //Called everytime like onPause() but not in the case of pressing back button
-        super.onSaveInstanceState (outState);
-        outState.putInt (GlobalData.SECTION_INDEX, mSectionIndex);
     }
 
     public void updateTitleOnSectionAttached(int number) {
@@ -200,7 +220,6 @@ public class StartupPage extends AppCompatActivity implements
             mActionBar.setTitle (mTitle);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -251,7 +270,6 @@ public class StartupPage extends AppCompatActivity implements
         return super.onCreateOptionsMenu (menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -280,16 +298,14 @@ public class StartupPage extends AppCompatActivity implements
                         Log.d (TAG, "onClick: menu delete sub rowID =" + mSectionIndex);
                     mDatabaseAdapter.deleteSubject (mSectionIndex + 1);
                     mNavigationDrawerFragment.populateListView ();
-                    if (mNavigationDrawerFragment.getSectionNo () == 0) {
-                        Intent intent = new Intent (StartupPage.this, AddAnotherSection.class);
-                        intent.putExtra (GlobalData.ADD_ANOTHER_SEC_HOME, false);
-                        startActivity (intent);
-                        StartupPage.this.finish ();
-                    } else if (mNavigationDrawerFragment.getSectionNo () > 0) {
+                    if (mNavigationDrawerFragment.getSectionNo () > 0 && mSectionIndex != 0) {
                         mSectionIndex = mSectionIndex - 1;
                         updateTitleOnSectionAttached (mSectionIndex);
-                        populateListView ();
+                    } else if (mNavigationDrawerFragment.getSectionNo () > 0 && mSectionIndex == 0) {
+                        mSectionIndex = 0;
+                        updateTitleOnSectionAttached (mSectionIndex);
                     }
+                    mNavigationDrawerFragment.selectItemWithCallback (mSectionIndex + 1);
                 }
             });
             builder.setNegativeButton (R.string.cancel_str, new DialogInterface.OnClickListener () {
@@ -308,7 +324,6 @@ public class StartupPage extends AppCompatActivity implements
         }
         if (id == R.id.action_mute) {
             SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil (StartupPage.this);
-            Toast.makeText (this, "item checked", Toast.LENGTH_SHORT).show ();
             if (item.isChecked ()) {
                 item.setChecked (false);
                 sharedPrefsUtil.enableNotification ();
@@ -352,39 +367,8 @@ public class StartupPage extends AppCompatActivity implements
     }
 
     @Override
-    public int getSectionIndex(){
+    public int getSectionIndex() {
         return mSectionIndex;
-    }
-
-    private void populateListView() {
-        populateListViewWithSearchQuery ("");
-    }
-
-    private void populateListViewWithSearchQuery(String searchQuery) {
-        int position = mViewPager.getCurrentItem ();
-        if (position == 0) {
-            FragmentAllNotes fragmentAllNotes = (FragmentAllNotes) mRegisteredFragments.get (position);
-            if (fragmentAllNotes != null) {
-                fragmentAllNotes.setSectionIndex (String.valueOf (mSectionIndex));
-                fragmentAllNotes.populateListView (searchQuery);
-            }
-        }
-        if (position == 1) {
-            FragmentStarredNotes fragmentStarredNotes = (FragmentStarredNotes) mRegisteredFragments.get (position);
-            if (fragmentStarredNotes != null) {
-                fragmentStarredNotes.setSectionIndex (String.valueOf (mSectionIndex));
-                fragmentStarredNotes.populateListViewInBackground (searchQuery);
-            }
-        }
-        if (position == 2) {
-            FragmentTagNotes fragmentTagNotes = (FragmentTagNotes) mRegisteredFragments.get (position);
-            if (fragmentTagNotes != null) {
-                fragmentTagNotes.setSectionIndex (String.valueOf (mSectionIndex));
-                fragmentTagNotes.populateListView (searchQuery);
-            }
-        }
-        if (DEBUG)
-            Log.d (TAG, "populateListViewInBackground  tab position :" + position + " with query = " + searchQuery);
     }
 
     /**
@@ -426,12 +410,45 @@ public class StartupPage extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult (requestCode, resultCode, data);
-        if (requestCode == GlobalData.REQUEST_FOR_SECTION_UPDATE) {
-            if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == StartupPage.SECTION_UPDATE_ACTIVITY_REQUEST) {
                 updateTitleOnSectionAttached (mSectionIndex);
                 mNavigationDrawerFragment.populateListView ();
+
+            } else if (requestCode == StartupPage.NOTE_DETAIL_ACTIVITY_REQUEST) {
+                if (data != null) {
+                    if (data.getStringExtra (GlobalData.NOTE_DETAIL_ACTIVITY_ACTION).equals (GlobalData.NOTE_BODY_CHANGED_ACTION)) {
+                        populateListView ();
+                    }
+                }
             }
         }
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause ();
+    }
+
+    @Override
+    public void onListAdapterInteractionListener(String data1, String data2, String data3) {
+
+    }
+
+    @Override
+    public void itemClicked(int sectionIndex, int noteIndex) {
+//        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                this, null, null);
+//        ActivityCompat.startActivity(this, new Intent(this, NoteDetailActivity.class),
+//                options.toBundle());
+
+        Intent intent = new Intent (StartupPage.this, NoteDetailActivity.class);
+        intent.putExtra (GlobalData.SECTION_INDEX, sectionIndex);
+        intent.putExtra (GlobalData.NOTE_INDEX, noteIndex);
+        startActivityForResult (intent, StartupPage.NOTE_DETAIL_ACTIVITY_REQUEST);
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {
@@ -441,20 +458,6 @@ public class StartupPage extends AppCompatActivity implements
             super (fm);
             tabTitles = getResources ().getStringArray (R.array.tabs_name);
         }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment) super.instantiateItem (container, position);
-            if(DEBUG) Log.d (TAG, "instantiateItem: fragment = "+fragment);
-            mRegisteredFragments.put (position, fragment);
-            return fragment;
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem (container, position, object);
-        }
-
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
@@ -471,6 +474,14 @@ public class StartupPage extends AppCompatActivity implements
         }
 
         @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem (container, position);
+            if (DEBUG) Log.d (TAG, "instantiateItem: fragment = " + fragment);
+            mRegisteredFragments.put (position, fragment);
+            return fragment;
+        }
+
+        @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             mRegisteredFragments.remove (position);  //Fragment destroyed by the pager adapter,
             // no need to store in mRegisteredFragments
@@ -478,13 +489,18 @@ public class StartupPage extends AppCompatActivity implements
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            return tabTitles[position];
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem (container, position, object);
         }
 
         @Override
         public int getCount() {
             return NO_OF_TABS;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
         }
 
 

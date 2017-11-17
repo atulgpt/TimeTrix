@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="50dp"
-    android:background="@drawable/tag_background"
-              android:paddingLeft="35dp"
-    android:paddingStart="35dp"
-    android:paddingRight="35dp"
-    android:paddingEnd="35dp">
+<RelativeLayout android:id="@+id/relativeLayoutTag"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/tag_background"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingEnd="35dp"
+                android:paddingLeft="35dp"
+                android:paddingRight="35dp"
+                android:paddingStart="35dp">
+    <!--android:background="@drawable/tag_background"-->
 
 
     <TextView
+        android:id="@+id/textViewTagRow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/lorem_ipsum_str"
-        android:id="@+id/textViewTagRow"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
-        android:layout_centerVertical="true"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:text="@string/lorem_ipsum_str"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000000"
-        android:textSize="17sp"/>
+        android:textSize="20sp"/>
 </RelativeLayout>

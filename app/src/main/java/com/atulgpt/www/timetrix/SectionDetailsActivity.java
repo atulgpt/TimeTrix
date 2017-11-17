@@ -25,13 +25,10 @@ public class SectionDetailsActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         ActivitySectionDetailsBinding binding = DataBindingUtil.setContentView (this, R.layout.activity_section_details);
-        mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX, 1);
+        mSectionIndex = getIntent ().getIntExtra (GlobalData.SECTION_INDEX, 1); //TODO do has extra
         Toolbar toolbar = (Toolbar) findViewById (R.id.toolbarSubDetail);
         setSupportActionBar (toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar ();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled (true);
-        }
         Button updateButton = (Button) findViewById (R.id.update);
         mSectionNameEditText = (EditText) findViewById (R.id.textViewSectionName);
         mSectionDescriptionEditText = (EditText) findViewById (R.id.textViewDescriptionName);
@@ -43,7 +40,6 @@ public class SectionDetailsActivity extends AppCompatActivity implements View.On
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled (true);
         }
-        getIntent ();
     }
 
     @Override
